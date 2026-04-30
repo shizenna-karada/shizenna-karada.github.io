@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理者ダッシュボード | 表参道自然なからだ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a18;
+    --ink-light: #4a4a42;
+    --ink-muted: #8a8a80;
+    --cream: #faf8f3;
+    --warm: #f0ece0;
+    --accent: #5c7a5c;
+    --accent-light: #8faa8f;
+    --accent-pale: #e8f0e8;
+    --border: #ddd9cc;
+    --red: #c0392b;
+    --red-pale: #fdecea;
+    --blue: #2980b9;
+    --blue-pale: #eaf4fb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: #f0ece0;
+    color: var(--ink);
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  /* ログイン画面 */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .login-box {
+    background: white;
+    border-radius: 12px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+  .login-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .login-sub {
+    font-size: 12px;
+    color: var(--ink-muted);
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .login-box label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-light);
+    margin-bottom: 6px;
+    margin-top: 16px;
+  }
+  .login-box input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Noto Sans JP', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .login-box input:focus { border-color: var(--accent); }
+  .login-btn {
+    width: 100%;
+    margin-top: 24px;
+    padding: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: background 0.2s;
+  }
+  .login-btn:hover { background: #4a6a4a; }
+  .login-error {
+    color: var(--red);
+    font-size: 13px;
+    text-align: center;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* ダッシュボード */
+  #dashboard { display: none; }
+
+  header {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+  }
+  .header-sub { font-size: 12px; color: var(--accent-light); }
+  .logout-btn {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: var(--cream);
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: all 0.2s;
+  }
+  .logout-btn:hover { background: rgba(255,255,255,0.1); }
+
+  main { max-width: 1000px; margin: 0 auto; padding: 32px 24px; }
+
+  /* サマリーカード */
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .card-label { font-size: 12px; color: var(--ink-muted); margin-bottom: 8px; }
+  .card-value {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .card-value span { font-size: 14px; color: var(--ink-muted); margin-left: 4px; }
+
+  /* タブ */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    background: white;
+    padding: 6px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    width: fit-content;
+  }
+  .tab {
+    padding: 8px 24px;
+    border: none;
+    background: none;
+    border-radius: 7px;
+    font-size: 14px;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    color: var(--ink-muted);
+    transition: all 0.2s;
+  }
+  .tab.active { background: var(--accent); color: white; font-weight: 500; }
+
+  /* 予約一覧 */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .add-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 9px 20px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .add-btn:hover { background: #4a6a4a; }
+  .refresh-btn {
+    background: white;
+    color: var(--ink-light);
+    border: 1px solid var(--border);
+    padding: 9px 16px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: all 0.2s;
+  }
+  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .table-wrap {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--cream); }
+  th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 14px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--cream); }
+
+  .status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .status-confirmed { background: var(--accent-pale); color: var(--accent); }
+  .status-cancelled { background: var(--red-pale); color: var(--red); }
+  .status-manual { background: var(--blue-pale); color: var(--blue); }
+
+  .action-btn {
+    padding: 4px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: all 0.2s;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--ink-light);
+    margin-right: 4px;
+  }
+  .action-btn:hover { border-color: var(--red); color: var(--red); }
+  .action-btn.restore:hover { border-color: var(--accent); color: var(--accent); }
+
+  .empty-msg {
+    text-align: center;
+    padding: 48px;
+    color: var(--ink-muted);
+    font-size: 14px;
+  }
+  .loading-msg {
+    text-align: center;
+    padding: 48px;
+    color: var(--ink-muted);
+    font-size: 14px;
+  }
+
+  /* フィルター */
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-bar select, .filter-bar input {
+    padding: 8px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    font-size: 13px;
+    font-family: 'Noto Sans JP', sans-serif;
+    background: white;
+    outline: none;
+    color: var(--ink);
+  }
+  .filter-bar select:focus, .filter-bar input:focus { border-color: var(--accent); }
+
+  /* モーダル */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+  .form-group { margin-bottom: 18px; }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-light);
+    margin-bottom: 6px;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Noto Sans JP', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+    background: white;
+    color: var(--ink);
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--accent); }
+  .modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .modal-submit {
+    flex: 1;
+    padding: 12px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .modal-submit:hover { background: #4a6a4a; }
+  .modal-cancel {
+    flex: 1;
+    padding: 12px;
+    background: white;
+    color: var(--ink-light);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .modal-cancel:hover { border-color: var(--ink-light); }
+
+  .required { color: var(--red); margin-left: 3px; }
+
+  @media (max-width: 640px) {
+    .summary-cards { grid-template-columns: 1fr 1fr; }
+    header { padding: 12px 16px; }
+    main { padding: 20px 16px; }
+    td, th { padding: 10px 12px; }
+    .tab { padding: 8px 14px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ログイン画面 -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-title">表参道自然なからだ</div>
+    <div class="login-sub">管理者ページ</div>
+    <label>パスワード</label>
+    <input type="password" id="password" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">ログイン</button>
+    <div class="login-error" id="login-error">パスワードが違います</div>
+  </div>
+</div>
+
+<!-- ダッシュボード -->
+<div id="dashboard">
+  <header>
+    <div>
+      <div class="header-title">表参道自然なからだ｜管理者ダッシュボード</div>
+      <div class="header-sub">予約管理システム</div>
+    </div>
+    <button class="logout-btn" onclick="logout()">ログアウト</button>
+  </header>
+
+  <main>
+    <!-- サマリー -->
+    <div class="summary-cards">
+      <div class="card">
+        <div class="card-label">今後の予約数</div>
+        <div class="card-value" id="count-upcoming">-<span>件</span></div>
+      </div>
+      <div class="card">
+        <div class="card-label">今月の予約数</div>
+        <div class="card-value" id="count-month">-<span>件</span></div>
+      </div>
+      <div class="card">
+        <div class="card-label">累計予約数</div>
+        <div class="card-value" id="count-total">-<span>件</span></div>
+      </div>
+    </div>
+
+    <!-- タブ -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('upcoming')">今後の予約</button>
+      <button class="tab" onclick="switchTab('all')">すべての予約</button>
+      <button class="tab" onclick="switchTab('cancelled')">キャンセル済み</button>
+    </div>
+
+    <!-- 予約一覧 -->
+    <div class="section-header">
+      <div class="section-title" id="tab-title">今後の予約</div>
+      <div>
+        <button class="refresh-btn" onclick="loadBookings()">↻ 更新</button>
+        <button class="add-btn" onclick="openAddModal()">＋ 手動予約入力</button>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <input type="text" id="search-input" placeholder="名前・メールで検索" oninput="renderTable()">
+      <select id="menu-filter" onchange="renderTable()">
+        <option value="">すべてのメニュー</option>
+        <option>鍼灸コース（約45分）</option>
+        <option>鍼灸マッサージコース（約60分）</option>
+        <option>ストレス・自律神経改善コース（約60分）</option>
+        <option>婦人科トラブル集中ケアコース（約60分）</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <div class="loading-msg" id="loading-msg">読み込み中...</div>
+      <table id="booking-table" style="display:none">
+        <thead>
+          <tr>
+            <th>日時</th>
+            <th>お名前</th>
+            <th>電話番号</th>
+            <th>メール</th>
+            <th>メニュー</th>
+            <th>ステータス</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+      <div class="empty-msg" id="empty-msg" style="display:none">予約はありません</div>
+    </div>
+  </main>
+</div>
+
+<!-- 手動予約モーダル -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <div class="modal-title">手動予約入力</div>
+    <div class="form-group">
+      <label>日時<span class="required">*</span></label>
+      <input type="text" id="m-datetime" placeholder="例：2026/06/03 11:00">
+    </div>
+    <div class="form-group">
+      <label>お名前<span class="required">*</span></label>
+      <input type="text" id="m-name" placeholder="山田 花子">
+    </div>
+    <div class="form-group">
+      <label>電話番号<span class="required">*</span></label>
+      <input type="tel" id="m-phone" placeholder="090-1234-5678">
+    </div>
+    <div class="form-group">
+      <label>メールアドレス</label>
+      <input type="email" id="m-email" placeholder="example@mail.com">
+    </div>
+    <div class="form-group">
+      <label>メニュー<span class="required">*</span></label>
+      <select id="m-menu">
+        <option value="">選択してください</option>
+        <option>鍼灸コース（約45分）</option>
+        <option>鍼灸マッサージコース（約60分）</option>
+        <option>ストレス・自律神経改善コース（約60分）</option>
+        <option>婦人科トラブル集中ケアコース（約60分）</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>備考</label>
+      <textarea id="m-note" rows="2" placeholder="メモがあれば入力"></textarea>
+    </div>
+    <div class="modal-buttons">
+      <button class="modal-cancel" onclick="closeModal()">キャンセル</button>
+      <button class="modal-submit" onclick="submitManual()">登録する</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============================
+// 設定
+// =============================
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxJH3Uqp0nqmrloarLFk9xuXKohRVXO9fQ1I0i4EPCYxPM45CqjoNGR8VgZKFH-6fPE/exec';
+const ADMIN_PASSWORD = 'seizan8989';
+// =============================
+
+let allBookings = [];
+let currentTab = 'upcoming';
+
+// ログイン
+function login() {
+  const pw = document.getElementById('password').value;
+  if (pw === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadBookings();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+function logout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('password').value = '';
+}
+
+// 予約データ読み込み
+async function loadBookings() {
+  document.getElementById('loading-msg').style.display = 'block';
+  document.getElementById('booking-table').style.display = 'none';
+  document.getElementById('empty-msg').style.display = 'none';
+
+  try {
+    const res = await fetch(GAS_URL + '?action=all');
+    const data = await res.json();
+    allBookings = data.bookings || [];
+    updateSummary();
+    renderTable();
+  } catch(e) {
+    document.getElementById('loading-msg').textContent = 'データの読み込みに失敗しました。GASのURLを確認してください。';
+  }
+}
+
+// サマリー更新
+function updateSummary() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const thisMonth = today.getMonth();
+  const thisYear = today.getFullYear();
+
+  const active = allBookings.filter(b => b[6] !== 'キャンセル');
+  const upcoming = active.filter(b => new Date(b[1].replace(/\//g,'-').split(' ')[0]) >= today);
+  const thisMonthBookings = active.filter(b => {
+    const d = new Date(b[1].replace(/\//g,'-').split(' ')[0]);
+    return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
+  });
+
+  document.getElementById('count-upcoming').innerHTML = `${upcoming.length}<span>件</span>`;
+  document.getElementById('count-month').innerHTML = `${thisMonthBookings.length}<span>件</span>`;
+  document.getElementById('count-total').innerHTML = `${active.length}<span>件</span>`;
+}
+
+// タブ切替
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  const titles = { upcoming: '今後の予約', all: 'すべての予約', cancelled: 'キャンセル済み' };
+  document.getElementById('tab-title').textContent = titles[tab];
+  renderTable();
+}
+
+// テーブル描画
+function renderTable() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const menuFilter = document.getElementById('menu-filter').value;
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  let filtered = allBookings.filter(b => {
+    const dateStr = b[1] ? b[1].replace(/\//g,'-').split(' ')[0] : '';
+    const date = new Date(dateStr);
+    const status = b[6] || '';
+
+    if (currentTab === 'upcoming') {
+      if (status === 'キャンセル') return false;
+      if (date < today) return false;
+    } else if (currentTab === 'cancelled') {
+      if (status !== 'キャンセル') return false;
+    } else {
+      if (status === 'キャンセル') return false;
+    }
+
+    if (search && !`${b[2]}${b[4]}`.toLowerCase().includes(search)) return false;
+    if (menuFilter && b[5] !== menuFilter) return false;
+    return true;
+  });
+
+  // 日付順ソート
+  filtered.sort((a, b) => new Date(a[1]) - new Date(b[1]));
+
+  document.getElementById('loading-msg').style.display = 'none';
+
+  if (filtered.length === 0) {
+    document.getElementById('booking-table').style.display = 'none';
+    document.getElementById('empty-msg').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('booking-table').style.display = 'table';
+  document.getElementById('empty-msg').style.display = 'none';
+
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = '';
+
+  filtered.forEach(b => {
+    const status = b[6] || '予約確定';
+    const isCancelled = status === 'キャンセル';
+    const isManual = status === '手動入力';
+
+    const badgeClass = isCancelled ? 'status-cancelled' : isManual ? 'status-manual' : 'status-confirmed';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${b[1] || '-'}</td>
+      <td>${b[2] || '-'}</td>
+      <td>${b[3] || '-'}</td>
+      <td style="font-size:12px">${b[4] || '-'}</td>
+      <td style="font-size:12px">${b[5] || '-'}</td>
+      <td><span class="status-badge ${badgeClass}">${status}</span></td>
+      <td>
+        ${isCancelled
+          ? `<button class="action-btn restore" onclick="updateStatus('${b[0]}', '予約確定')">戻す</button>`
+          : `<button class="action-btn" onclick="updateStatus('${b[0]}', 'キャンセル')">キャンセル</button>`
+        }
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ステータス更新
+async function updateStatus(id, newStatus) {
+  const label = newStatus === 'キャンセル' ? 'キャンセル' : '予約確定に戻す';
+  if (!confirm(`この予約を${label}しますか？`)) return;
+
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'updateStatus', id: id, status: newStatus })
+    });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      await loadBookings();
+    } else {
+      alert('更新に失敗しました');
+    }
+  } catch(e) {
+    alert('通信エラーが発生しました');
+  }
+}
+
+// 手動予約モーダル
+function openAddModal() {
+  document.getElementById('add-modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('add-modal').classList.remove('open');
+  ['m-datetime','m-name','m-phone','m-email','m-note'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('m-menu').value = '';
+}
+
+// 手動予約送信
+async function submitManual() {
+  const datetime = document.getElementById('m-datetime').value.trim();
+  const name = document.getElementById('m-name').value.trim();
+  const phone = document.getElementById('m-phone').value.trim();
+  const email = document.getElementById('m-email').value.trim();
+  const menu = document.getElementById('m-menu').value;
+  const note = document.getElementById('m-note').value.trim();
+
+  if (!datetime || !name || !phone || !menu) {
+    alert('日時・お名前・電話番号・メニューは必須です');
+    return;
+  }
+
+  try {
+    const res = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'manual',
+        datetime, name, phone, email, menu, note
+      })
+    });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      closeModal();
+      await loadBookings();
+    } else {
+      alert('登録に失敗しました');
+    }
+  } catch(e) {
+    alert('通信エラーが発生しました');
+  }
+}
+</script>
+</body>
+</html>
