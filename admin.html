@@ -1004,6 +1004,72 @@
             合計：<span style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)">${row[63] || 0}</span>点 / 40点
           </div>
         </div>
+
+        ${(() => {
+          // 主証・副証の判定
+          const viscera = [
+            { name: '肝', score: parseInt(row[58]) || 0 },
+            { name: '心', score: parseInt(row[59]) || 0 },
+            { name: '脾', score: parseInt(row[60]) || 0 },
+            { name: '肺', score: parseInt(row[61]) || 0 },
+            { name: '腎', score: parseInt(row[62]) || 0 },
+          ];
+          const sorted = [...viscera].sort((a, b) => b.score - a.score);
+          const maxScore = sorted[0].score;
+          const sho = sorted.filter(v => v.score === maxScore);
+          const fusho = sorted.filter(v => v.score !== maxScore && maxScore - v.score <= 3);
+
+          // 合計スコア評価
+          const total = parseInt(row[63]) || 0;
+          let evaluation, evalColor, evalDesc;
+          if (total <= 8) {
+            evaluation = '良好'; evalColor = '#7a8c72';
+            evalDesc = '全体的に不定愁訴は少なく、良好な状態です。';
+          } else if (total <= 16) {
+            evaluation = '軽度の不調あり'; evalColor = '#b8975a';
+            evalDesc = '一部に不定愁訴がみられます。生活習慣の見直しを検討してください。';
+          } else if (total <= 24) {
+            evaluation = '中程度の不調あり'; evalColor = '#c09a5a';
+            evalDesc = '複数の臓に不定愁訴が蓄積しています。施術の優先度を検討してください。';
+          } else if (total <= 32) {
+            evaluation = '不調が強い・要注意'; evalColor = '#c07a5a';
+            evalDesc = '全身的な不調が強い状態です。回復に時間がかかる可能性があります。生活習慣全般の見直しを促してください。';
+          } else {
+            evaluation = '全身的な不調が顕著'; evalColor = '#c0756a';
+            evalDesc = '不定愁訴が非常に多く蓄積しています。施術への反応が出にくい場合があります。十分な注意と丁寧な経過観察が必要です。';
+          }
+
+          return `
+          <div style="background:#faf8f4;border:1px solid var(--border);padding:16px 20px;margin-top:16px;position:relative">
+            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--gold))"></div>
+            <div style="font-size:10px;letter-spacing:0.25em;color:var(--gold);margin-bottom:12px">— 証の評価</div>
+            <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:12px">
+              <div>
+                <div style="font-size:9px;letter-spacing:0.15em;color:var(--ash);margin-bottom:4px">主証</div>
+                <div style="font-size:16px;font-weight:500;color:var(--ink);letter-spacing:0.1em">
+                  ${sho.map(v => `${v.name}（${v.score}点）`).join('・')}
+                </div>
+              </div>
+              ${fusho.length > 0 ? `
+              <div>
+                <div style="font-size:9px;letter-spacing:0.15em;color:var(--ash);margin-bottom:4px">副証</div>
+                <div style="font-size:14px;color:var(--ash);letter-spacing:0.1em">
+                  ${fusho.map(v => `${v.name}（${v.score}点）`).join('・')}
+                </div>
+              </div>` : ''}
+            </div>
+            <div style="font-size:10px;color:var(--ash);letter-spacing:0.05em;padding-top:8px;border-top:1px solid var(--border)">
+              ※主証との差が3点以内の臓を副証として表示しています
+            </div>
+          </div>
+
+          <div style="background:#faf8f4;border:1px solid var(--border);border-left:3px solid ${evalColor};padding:16px 20px;margin-top:12px">
+            <div style="font-size:9px;letter-spacing:0.15em;color:var(--ash);margin-bottom:6px">合計スコア評価（${total}点 / 40点）</div>
+            <div style="font-size:15px;font-weight:500;color:${evalColor};letter-spacing:0.08em;margin-bottom:6px">${evaluation}</div>
+            <div style="font-size:11px;color:var(--ash);line-height:1.8;letter-spacing:0.05em">${evalDesc}</div>
+          </div>
+          `;
+        })()}
       </div>
 
       <div class="detail-section">
