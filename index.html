@@ -947,7 +947,7 @@
 <body>
 
 <!-- ── 同意オーバーレイ ── -->
-<div id="consent-overlay">
+<div id="consent-overlay" style="display:none">
   <div class="consent-inner">
     <div class="consent-logo">
       <span class="en">Omotesando Shizenna Karada</span>
@@ -1002,7 +1002,7 @@
   </div>
 </div>
 
-<div id="hero-wrap" style="display:none">
+<div id="hero-wrap" style="display:block">
 <!-- ── HERO ── -->
 <section class="hero" id="hero">
   <div class="hero-bg"></div>
@@ -1025,7 +1025,7 @@
       自然なからだへ。
     </p>
 
-    <a href="#booking" class="cta-btn" id="cta-btn">
+    <a href="#" class="cta-btn" id="cta-btn" onclick="showConsent(); return false;">
       <span>ご予約はこちら</span>
       <span class="cta-btn-arrow">→</span>
     </a>
@@ -1123,28 +1123,14 @@
           <div class="menu-check"></div>
           <div class="menu-info">
             <div class="menu-name">鍼灸コース</div>
-            <div class="menu-duration">approx. 45 min</div>
+            <div class="menu-duration">治療時間：約45分　／　6,600円（税込）</div>
           </div>
         </button>
         <button class="menu-btn" data-menu="鍼灸マッサージコース（約60分）" onclick="selectMenu(this)">
           <div class="menu-check"></div>
           <div class="menu-info">
             <div class="menu-name">鍼灸マッサージコース</div>
-            <div class="menu-duration">approx. 60 min</div>
-          </div>
-        </button>
-        <button class="menu-btn" data-menu="ストレス・自律神経改善コース（約60分）" onclick="selectMenu(this)">
-          <div class="menu-check"></div>
-          <div class="menu-info">
-            <div class="menu-name">ストレス・自律神経改善コース</div>
-            <div class="menu-duration">approx. 60 min</div>
-          </div>
-        </button>
-        <button class="menu-btn" data-menu="婦人科トラブル集中ケアコース（約60分）" onclick="selectMenu(this)">
-          <div class="menu-check"></div>
-          <div class="menu-info">
-            <div class="menu-name">婦人科トラブル集中ケアコース</div>
-            <div class="menu-duration">approx. 60 min</div>
+            <div class="menu-duration">治療時間：約60分　／　9,900円（税込）</div>
           </div>
         </button>
       </div>
@@ -1180,6 +1166,7 @@
           <textarea id="input-note" placeholder="お気軽にご記入ください。"></textarea>
         </div>
       </div>
+      <p class="notice" style="margin-top:20px;">すべての必須項目を入力すると、確認画面が表示されます。</p>
     </div>
 
     <!-- STEP 5 確認・送信 -->
@@ -1249,10 +1236,14 @@
 
 <script>
   // ===== 同意ページ制御 =====
+  function showConsent() {
+    document.getElementById('consent-overlay').style.display = 'flex';
+    window.scrollTo({ top: 0 });
+  }
+
   function goToReservation() {
     document.getElementById('consent-overlay').style.display = 'none';
-    document.getElementById('hero-wrap').style.display = 'block';
-    window.scrollTo({ top: 0 });
+    document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
   }
 
   function goToNoPage() {
