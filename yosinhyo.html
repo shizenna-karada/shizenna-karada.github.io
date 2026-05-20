@@ -1517,11 +1517,9 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      document.querySelector('.main').innerHTML = '';
-      document.getElementById('complete-area') && (document.getElementById('complete-area').style.display = 'block');
-      document.querySelector('.main').appendChild(document.getElementById('complete-area'));
-      document.getElementById('complete-area').style.display = 'block';
+      document.querySelectorAll('.step-panel').forEach(el => el.style.display = 'none');
       document.querySelector('.progress-wrap').style.display = 'none';
+      document.getElementById('complete-area').style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch(e) {
       const err = document.getElementById('error-area');
