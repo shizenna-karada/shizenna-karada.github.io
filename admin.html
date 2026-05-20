@@ -3,741 +3,1157 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>管理者ダッシュボード | 表参道自然なからだ</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<title>管理画面 | 表参道 自然なからだ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #1a1a18;
-    --ink-light: #4a4a42;
-    --ink-muted: #8a8a80;
-    --cream: #faf8f3;
-    --warm: #f0ece0;
-    --accent: #5c7a5c;
-    --accent-light: #8faa8f;
-    --accent-pale: #e8f0e8;
-    --border: #ddd9cc;
-    --red: #c0392b;
-    --red-pale: #fdecea;
-    --blue: #2980b9;
-    --blue-pale: #eaf4fb;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Noto Sans JP', sans-serif;
-    background: #f0ece0;
-    color: var(--ink);
-    font-weight: 300;
-    min-height: 100vh;
+    --ink: #1a1510;
+    --ash: #6b6258;
+    --paper: #f8f4ef;
+    --cream: #ede8e0;
+    --gold: #b8975a;
+    --gold-light: #d4b87a;
+    --border: rgba(184,151,90,0.25);
+    --red: #c0756a;
+    --green: #7a8c72;
+    --white: #ffffff;
   }
 
-  /* ログイン画面 */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; scroll-behavior: smooth; }
+  body { background: var(--paper); color: var(--ink); font-family: 'Noto Serif JP', serif; min-height: 100vh; }
+
+  /* ── ログイン画面 ── */
   #login-screen {
-    min-height: 100vh;
+    position: fixed; inset: 0;
+    background: var(--ink);
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 9999;
     padding: 24px;
   }
   .login-box {
-    background: white;
-    border-radius: 12px;
-    padding: 48px 40px;
     width: 100%;
-    max-width: 360px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    max-width: 400px;
+    animation: fadeUp 0.6s ease both;
   }
-  .login-title {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 20px;
-    font-weight: 600;
+  .login-logo {
     text-align: center;
+    margin-bottom: 40px;
+  }
+  .login-logo .en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    display: block;
     margin-bottom: 8px;
   }
-  .login-sub {
-    font-size: 12px;
-    color: var(--ink-muted);
-    text-align: center;
-    margin-bottom: 32px;
-  }
-  .login-box label {
+  .login-logo .ja {
+    font-size: 20px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: white;
     display: block;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--ink-light);
-    margin-bottom: 6px;
-    margin-top: 16px;
+    margin-bottom: 4px;
   }
-  .login-box input {
+  .login-logo .sub {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: rgba(255,255,255,0.4);
+  }
+  .login-field {
+    margin-bottom: 16px;
+  }
+  .login-field label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 8px;
+  }
+  .login-field input {
     width: 100%;
-    padding: 12px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    font-size: 15px;
-    font-family: 'Noto Sans JP', sans-serif;
+    padding: 14px 18px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(184,151,90,0.3);
+    color: white;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 14px;
+    font-weight: 300;
     outline: none;
     transition: border-color 0.2s;
   }
-  .login-box input:focus { border-color: var(--accent); }
+  .login-field input:focus { border-color: var(--gold); }
+  .login-field input::placeholder { color: rgba(255,255,255,0.2); }
   .login-btn {
     width: 100%;
-    margin-top: 24px;
-    padding: 14px;
-    background: var(--accent);
-    color: white;
+    padding: 16px;
+    background: var(--gold);
     border: none;
-    border-radius: 8px;
-    font-size: 15px;
+    color: white;
     font-family: 'Noto Serif JP', serif;
-    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.25em;
     cursor: pointer;
-    letter-spacing: 0.08em;
+    margin-top: 8px;
     transition: background 0.2s;
   }
-  .login-btn:hover { background: #4a6a4a; }
+  .login-btn:hover { background: var(--gold-light); }
   .login-error {
-    color: var(--red);
-    font-size: 13px;
+    color: #e8a09a;
+    font-size: 11px;
     text-align: center;
     margin-top: 12px;
+    letter-spacing: 0.05em;
     display: none;
   }
 
-  /* ダッシュボード */
-  #dashboard { display: none; }
+  /* ── メインレイアウト ── */
+  #app { display: none; }
 
-  header {
+  .topbar {
     background: var(--ink);
-    color: var(--cream);
-    padding: 16px 32px;
+    padding: 0 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
-  .header-title {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 16px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+  .topbar-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
   }
-  .header-sub { font-size: 12px; color: var(--accent-light); }
-  .logout-btn {
-    background: none;
-    border: 1px solid rgba(255,255,255,0.3);
-    color: var(--cream);
-    padding: 6px 16px;
-    border-radius: 6px;
-    font-size: 13px;
-    cursor: pointer;
-    font-family: 'Noto Sans JP', sans-serif;
-    transition: all 0.2s;
-  }
-  .logout-btn:hover { background: rgba(255,255,255,0.1); }
-
-  main { max-width: 1000px; margin: 0 auto; padding: 32px 24px; }
-
-  /* サマリーカード */
-  .summary-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-  .card {
-    background: white;
-    border-radius: 10px;
-    padding: 20px 24px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  }
-  .card-label { font-size: 12px; color: var(--ink-muted); margin-bottom: 8px; }
-  .card-value {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 28px;
-    font-weight: 600;
-    color: var(--accent);
-  }
-  .card-value span { font-size: 14px; color: var(--ink-muted); margin-left: 4px; }
-
-  /* タブ */
-  .tabs {
+  .topbar-nav {
     display: flex;
     gap: 4px;
-    margin-bottom: 20px;
-    background: white;
-    padding: 6px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    width: fit-content;
   }
-  .tab {
-    padding: 8px 24px;
+  .nav-btn {
+    padding: 8px 16px;
+    background: transparent;
     border: none;
-    background: none;
-    border-radius: 7px;
-    font-size: 14px;
-    font-family: 'Noto Sans JP', sans-serif;
+    color: rgba(255,255,255,0.5);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
     cursor: pointer;
-    color: var(--ink-muted);
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+  }
+  .nav-btn:hover { color: white; }
+  .nav-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .logout-btn {
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.4);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
     transition: all 0.2s;
   }
-  .tab.active { background: var(--accent); color: white; font-weight: 500; }
+  .logout-btn:hover { border-color: var(--red); color: var(--red); }
 
-  /* 予約一覧 */
+  .content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── タブパネル ── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeUp 0.4s ease; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── セクションヘッダー ── */
   .section-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
   }
   .section-title {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: 0.15em;
   }
-  .add-btn {
-    background: var(--accent);
-    color: white;
-    border: none;
-    padding: 9px 20px;
-    border-radius: 7px;
-    font-size: 14px;
-    font-family: 'Noto Sans JP', sans-serif;
-    cursor: pointer;
-    transition: background 0.2s;
+  .section-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 4px;
   }
-  .add-btn:hover { background: #4a6a4a; }
-  .refresh-btn {
+
+  /* ── カード ── */
+  .card {
     background: white;
-    color: var(--ink-light);
     border: 1px solid var(--border);
-    padding: 9px 16px;
-    border-radius: 7px;
-    font-size: 14px;
-    font-family: 'Noto Sans JP', sans-serif;
-    cursor: pointer;
-    margin-right: 8px;
+    padding: 24px;
+    margin-bottom: 12px;
+    position: relative;
     transition: all 0.2s;
   }
-  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .card:hover::before { opacity: 1; }
 
-  .table-wrap {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    overflow: hidden;
+  /* ── テーブル ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
   }
-  table { width: 100%; border-collapse: collapse; }
-  thead { background: var(--cream); }
-  th {
-    padding: 12px 16px;
+  .data-table th {
     text-align: left;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--ink-muted);
-    letter-spacing: 0.05em;
+    padding: 10px 12px;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    color: var(--ash);
     border-bottom: 1px solid var(--border);
+    background: #faf8f4;
   }
-  td {
-    padding: 14px 16px;
-    font-size: 14px;
-    border-bottom: 1px solid var(--border);
+  .data-table td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(184,151,90,0.1);
     vertical-align: middle;
   }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: var(--cream); }
+  .data-table tr:hover td { background: #faf8f4; }
 
-  .status-badge {
+  /* ── バッジ ── */
+  .badge {
     display: inline-block;
     padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    border-radius: 0;
   }
-  .status-confirmed { background: var(--accent-pale); color: var(--accent); }
-  .status-cancelled { background: var(--red-pale); color: var(--red); }
-  .status-manual { background: var(--blue-pale); color: var(--blue); }
+  .badge-confirmed { background: #eaf0e8; color: var(--green); border: 1px solid rgba(122,140,114,0.3); }
+  .badge-cancelled { background: #fdf0ee; color: var(--red); border: 1px solid rgba(192,117,106,0.3); }
+  .badge-manual { background: #f0edf8; color: #7a6aaa; border: 1px solid rgba(122,106,170,0.3); }
+  .badge-shinshin { background: #fdf8ee; color: var(--gold); border: 1px solid var(--border); }
+  .badge-saishin { background: #f4f4f4; color: var(--ash); border: 1px solid rgba(107,98,88,0.2); }
 
-  .action-btn {
-    padding: 4px 12px;
-    border-radius: 5px;
-    font-size: 12px;
-    cursor: pointer;
-    font-family: 'Noto Sans JP', sans-serif;
-    transition: all 0.2s;
+  /* ── ボタン ── */
+  .btn {
+    padding: 8px 18px;
     border: 1px solid var(--border);
     background: white;
-    color: var(--ink-light);
-    margin-right: 4px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ash);
+    cursor: pointer;
+    transition: all 0.2s;
   }
-  .action-btn:hover { border-color: var(--red); color: var(--red); }
-  .action-btn.restore:hover { border-color: var(--accent); color: var(--accent); }
+  .btn:hover { border-color: var(--gold); color: var(--ink); }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .btn-primary:hover { background: var(--gold); border-color: var(--gold); color: white; }
+  .btn-danger { border-color: rgba(192,117,106,0.3); color: var(--red); }
+  .btn-danger:hover { background: #fdf0ee; border-color: var(--red); }
+  .btn-sm { padding: 5px 12px; font-size: 10px; }
 
-  .empty-msg {
-    text-align: center;
-    padding: 48px;
-    color: var(--ink-muted);
-    font-size: 14px;
-  }
-  .loading-msg {
-    text-align: center;
-    padding: 48px;
-    color: var(--ink-muted);
-    font-size: 14px;
-  }
-
-  /* フィルター */
-  .filter-bar {
+  /* ── 検索・フィルター ── */
+  .search-bar {
     display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
+    gap: 12px;
+    margin-bottom: 24px;
     flex-wrap: wrap;
-    align-items: center;
   }
-  .filter-bar select, .filter-bar input {
-    padding: 8px 12px;
-    border: 1.5px solid var(--border);
-    border-radius: 7px;
-    font-size: 13px;
-    font-family: 'Noto Sans JP', sans-serif;
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
     background: white;
-    outline: none;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 13px;
     color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
   }
-  .filter-bar select:focus, .filter-bar input:focus { border-color: var(--accent); }
+  .search-input:focus { border-color: var(--gold); }
 
-  /* モーダル */
+  /* ── 統計カード ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--ash);
+  }
+
+  /* ── グラフ ── */
+  .chart-wrap {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .chart-title {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--ash);
+    margin-bottom: 20px;
+  }
+  .bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .bar-label {
+    font-size: 11px;
+    color: var(--ash);
+    width: 80px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+  .bar-track {
+    flex: 1;
+    background: var(--cream);
+    height: 20px;
+    position: relative;
+  }
+  .bar-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    transition: width 0.8s ease;
+  }
+  .bar-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    color: var(--ink);
+    width: 40px;
+  }
+
+  /* ── モーダル ── */
   .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,21,16,0.7);
+    z-index: 500;
     display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 100;
     align-items: center;
     justify-content: center;
     padding: 24px;
   }
   .modal-overlay.open { display: flex; }
   .modal {
-    background: white;
-    border-radius: 12px;
-    padding: 32px;
+    background: var(--paper);
+    max-width: 760px;
     width: 100%;
-    max-width: 480px;
     max-height: 90vh;
     overflow-y: auto;
+    position: relative;
+    animation: fadeUp 0.3s ease;
+  }
+  .modal-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+  .modal-header::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
   }
   .modal-title {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+  }
+  .modal-close {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--ash);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { background: var(--red); color: white; border-color: var(--red); }
+  .modal-body { padding: 28px; }
+
+  /* 予診票詳細 */
+  .detail-section {
     margin-bottom: 24px;
   }
-  .form-group { margin-bottom: 18px; }
-  .form-group label {
-    display: block;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--ink-light);
-    margin-bottom: 6px;
+  .detail-section-title {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
   }
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .detail-row {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    padding: 4px 0;
+  }
+  .detail-key {
+    color: var(--ash);
+    min-width: 100px;
+    flex-shrink: 0;
+  }
+  .detail-val { color: var(--ink); }
+
+  /* FVSスコアバー */
+  .fvs-score-wrap { margin-bottom: 16px; }
+  .fvs-score-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .fvs-score-label {
+    font-size: 11px;
+    color: var(--ash);
+    width: 60px;
+  }
+  .fvs-score-track {
+    flex: 1;
+    background: var(--cream);
+    height: 12px;
+    position: relative;
+  }
+  .fvs-score-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  }
+  .fvs-score-num {
+    font-family: 'Cormorant Garamond', serif;
     font-size: 14px;
-    font-family: 'Noto Sans JP', sans-serif;
+    color: var(--ink);
+    width: 30px;
+    text-align: right;
+  }
+
+  /* メモ欄 */
+  .memo-area {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    background: white;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 13px;
+    color: var(--ink);
+    min-height: 100px;
+    resize: vertical;
     outline: none;
     transition: border-color 0.2s;
-    background: white;
-    color: var(--ink);
   }
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus { border-color: var(--accent); }
-  .modal-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 24px;
-  }
-  .modal-submit {
-    flex: 1;
-    padding: 12px;
-    background: var(--accent);
-    color: white;
+  .memo-area:focus { border-color: var(--gold); }
+
+  /* 印刷ボタン */
+  .print-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--ink);
+    color: var(--paper);
     border: none;
-    border-radius: 8px;
-    font-size: 15px;
     font-family: 'Noto Serif JP', serif;
-    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.15em;
     cursor: pointer;
     transition: background 0.2s;
   }
-  .modal-submit:hover { background: #4a6a4a; }
-  .modal-cancel {
-    flex: 1;
-    padding: 12px;
-    background: white;
-    color: var(--ink-light);
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: 'Noto Sans JP', sans-serif;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .modal-cancel:hover { border-color: var(--ink-light); }
+  .print-btn:hover { background: var(--gold); }
 
-  .required { color: var(--red); margin-left: 3px; }
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--ash);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--ash);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+  }
+
+  /* 印刷時 */
+  @media print {
+    .topbar, .search-bar, .btn, .modal-close, .print-btn, .memo-area + button { display: none !important; }
+    .modal { max-height: none; box-shadow: none; }
+    .modal-overlay { position: static; background: none; padding: 0; display: block !important; }
+  }
 
   @media (max-width: 640px) {
-    .summary-cards { grid-template-columns: 1fr 1fr; }
-    header { padding: 12px 16px; }
-    main { padding: 20px 16px; }
-    td, th { padding: 10px 12px; }
-    .tab { padding: 8px 14px; font-size: 13px; }
+    .topbar-nav { display: none; }
+    .data-table { font-size: 11px; }
+    .data-table th, .data-table td { padding: 8px; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .detail-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<!-- ログイン画面 -->
+<!-- ── ログイン画面 ── -->
 <div id="login-screen">
   <div class="login-box">
-    <div class="login-title">表参道自然なからだ</div>
-    <div class="login-sub">管理者ページ</div>
-    <label>パスワード</label>
-    <input type="password" id="password" placeholder="パスワードを入力" onkeydown="if(event.key==='Enter')login()">
-    <button class="login-btn" onclick="login()">ログイン</button>
-    <div class="login-error" id="login-error">パスワードが違います</div>
+    <div class="login-logo">
+      <span class="en">Omotesando Shizenna Karada</span>
+      <span class="ja">表参道 自然なからだ</span>
+      <span class="sub">管理画面</span>
+    </div>
+    <div class="login-field">
+      <label>パスワード</label>
+      <input type="password" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">ログイン</button>
+    <div class="login-error" id="login-error">パスワードが正しくありません</div>
   </div>
 </div>
 
-<!-- ダッシュボード -->
-<div id="dashboard">
-  <header>
-    <div>
-      <div class="header-title">表参道自然なからだ｜管理者ダッシュボード</div>
-      <div class="header-sub">予約管理システム</div>
+<!-- ── メインアプリ ── -->
+<div id="app">
+  <div class="topbar">
+    <span class="topbar-brand">自然なからだ 管理画面</span>
+    <div class="topbar-nav">
+      <button class="nav-btn active" onclick="switchTab('tab-booking', this)">予約一覧</button>
+      <button class="nav-btn" onclick="switchTab('tab-yosinhyo', this)">予診票</button>
+      <button class="nav-btn" onclick="switchTab('tab-stats', this)">統計</button>
     </div>
-    <button class="logout-btn" onclick="logout()">ログアウト</button>
-  </header>
+    <button class="logout-btn" onclick="doLogout()">ログアウト</button>
+  </div>
 
-  <main>
-    <!-- サマリー -->
-    <div class="summary-cards">
-      <div class="card">
-        <div class="card-label">今後の予約数</div>
-        <div class="card-value" id="count-upcoming">-<span>件</span></div>
+  <div class="content">
+
+    <!-- ===== 予約一覧 ===== -->
+    <div class="tab-panel active" id="tab-booking">
+      <div class="section-header">
+        <div>
+          <span class="section-label">Reservations</span>
+          <h2 class="section-title">予約一覧</h2>
+        </div>
+        <button class="btn btn-primary" onclick="loadBookings()">更新</button>
       </div>
-      <div class="card">
-        <div class="card-label">今月の予約数</div>
-        <div class="card-value" id="count-month">-<span>件</span></div>
+
+      <div class="search-bar">
+        <input type="text" class="search-input" id="booking-search" placeholder="名前・日付で検索..." oninput="filterBookings()">
+        <select class="search-input" id="booking-filter" style="flex:0;min-width:120px" onchange="filterBookings()">
+          <option value="">すべて</option>
+          <option value="予約確定">予約確定</option>
+          <option value="キャンセル">キャンセル</option>
+          <option value="手動入力">手動入力</option>
+        </select>
       </div>
-      <div class="card">
-        <div class="card-label">累計予約数</div>
-        <div class="card-value" id="count-total">-<span>件</span></div>
+
+      <div id="booking-loading" class="loading">読み込み中...</div>
+      <div id="booking-table-wrap" style="display:none">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>日時</th>
+              <th>お名前</th>
+              <th>メニュー</th>
+              <th>初再診</th>
+              <th>ステータス</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="booking-tbody"></tbody>
+        </table>
+      </div>
+      <div id="booking-empty" class="empty-state" style="display:none">予約データがありません</div>
+    </div>
+
+    <!-- ===== 予診票 ===== -->
+    <div class="tab-panel" id="tab-yosinhyo">
+      <div class="section-header">
+        <div>
+          <span class="section-label">Medical Records</span>
+          <h2 class="section-title">予診票一覧</h2>
+        </div>
+        <button class="btn btn-primary" onclick="loadYosinhyo()">更新</button>
+      </div>
+
+      <div class="search-bar">
+        <input type="text" class="search-input" id="yosinhyo-search" placeholder="名前で検索..." oninput="filterYosinhyo()">
+      </div>
+
+      <div id="yosinhyo-loading" class="loading">読み込み中...</div>
+      <div id="yosinhyo-table-wrap" style="display:none">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>受付日時</th>
+              <th>患者番号</th>
+              <th>お名前</th>
+              <th>年齢・性別</th>
+              <th>主訴（抜粋）</th>
+              <th>FVS合計</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="yosinhyo-tbody"></tbody>
+        </table>
+      </div>
+      <div id="yosinhyo-empty" class="empty-state" style="display:none">予診票データがありません</div>
+    </div>
+
+    <!-- ===== 統計 ===== -->
+    <div class="tab-panel" id="tab-stats">
+      <div class="section-header">
+        <div>
+          <span class="section-label">Statistics</span>
+          <h2 class="section-title">統計</h2>
+        </div>
+        <button class="btn btn-primary" onclick="loadStats()">更新</button>
+      </div>
+
+      <div class="stats-grid" id="stats-cards">
+        <div class="stat-card">
+          <span class="stat-num" id="stat-total-booking">—</span>
+          <span class="stat-label">総予約数</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num" id="stat-this-month">—</span>
+          <span class="stat-label">今月の予約</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num" id="stat-shinshin">—</span>
+          <span class="stat-label">初診数</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num" id="stat-yosinhyo">—</span>
+          <span class="stat-label">予診票受信数</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num" id="stat-fvs-avg">—</span>
+          <span class="stat-label">FVS平均スコア</span>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-title">メニュー別予約数</div>
+        <div class="bar-chart" id="chart-menu"></div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-title">FVSv2 五臓別平均スコア</div>
+        <div class="bar-chart" id="chart-fvs"></div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-title">月別予約数</div>
+        <div class="bar-chart" id="chart-monthly"></div>
       </div>
     </div>
 
-    <!-- タブ -->
-    <div class="tabs">
-      <button class="tab active" onclick="switchTab('upcoming')">今後の予約</button>
-      <button class="tab" onclick="switchTab('all')">すべての予約</button>
-      <button class="tab" onclick="switchTab('cancelled')">キャンセル済み</button>
-    </div>
+  </div><!-- /content -->
+</div><!-- /app -->
 
-    <!-- 予約一覧 -->
-    <div class="section-header">
-      <div class="section-title" id="tab-title">今後の予約</div>
-      <div>
-        <button class="refresh-btn" onclick="loadBookings()">↻ 更新</button>
-        <button class="add-btn" onclick="openAddModal()">＋ 手動予約入力</button>
+<!-- ── 予診票詳細モーダル ── -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modal-title">予診票詳細</h3>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="print-btn" onclick="printModal()">印刷</button>
+        <button class="modal-close" onclick="closeModal()">✕</button>
       </div>
     </div>
-
-    <div class="filter-bar">
-      <input type="text" id="search-input" placeholder="名前・メールで検索" oninput="renderTable()">
-      <select id="menu-filter" onchange="renderTable()">
-        <option value="">すべてのメニュー</option>
-        <option>鍼灸コース（約45分）</option>
-        <option>鍼灸マッサージコース（約60分）</option>
-        <option>ストレス・自律神経改善コース（約60分）</option>
-        <option>婦人科トラブル集中ケアコース（約60分）</option>
-      </select>
-    </div>
-
-    <div class="table-wrap">
-      <div class="loading-msg" id="loading-msg">読み込み中...</div>
-      <table id="booking-table" style="display:none">
-        <thead>
-          <tr>
-            <th>日時</th>
-            <th>お名前</th>
-            <th>電話番号</th>
-            <th>メール</th>
-            <th>メニュー</th>
-            <th>ステータス</th>
-            <th>操作</th>
-          </tr>
-        </thead>
-        <tbody id="table-body"></tbody>
-      </table>
-      <div class="empty-msg" id="empty-msg" style="display:none">予約はありません</div>
-    </div>
-  </main>
-</div>
-
-<!-- 手動予約モーダル -->
-<div class="modal-overlay" id="add-modal">
-  <div class="modal">
-    <div class="modal-title">手動予約入力</div>
-    <div class="form-group">
-      <label>日時<span class="required">*</span></label>
-      <input type="text" id="m-datetime" placeholder="例：2026/06/03 11:00">
-    </div>
-    <div class="form-group">
-      <label>お名前<span class="required">*</span></label>
-      <input type="text" id="m-name" placeholder="山田 花子">
-    </div>
-    <div class="form-group">
-      <label>電話番号<span class="required">*</span></label>
-      <input type="tel" id="m-phone" placeholder="090-1234-5678">
-    </div>
-    <div class="form-group">
-      <label>メールアドレス</label>
-      <input type="email" id="m-email" placeholder="example@mail.com">
-    </div>
-    <div class="form-group">
-      <label>メニュー<span class="required">*</span></label>
-      <select id="m-menu">
-        <option value="">選択してください</option>
-        <option>鍼灸コース（約45分）</option>
-        <option>鍼灸マッサージコース（約60分）</option>
-        <option>ストレス・自律神経改善コース（約60分）</option>
-        <option>婦人科トラブル集中ケアコース（約60分）</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>備考</label>
-      <textarea id="m-note" rows="2" placeholder="メモがあれば入力"></textarea>
-    </div>
-    <div class="modal-buttons">
-      <button class="modal-cancel" onclick="closeModal()">キャンセル</button>
-      <button class="modal-submit" onclick="submitManual()">登録する</button>
-    </div>
+    <div class="modal-body" id="modal-body"></div>
   </div>
 </div>
 
 <script>
-// =============================
-// 設定
-// =============================
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxJH3Uqp0nqmrloarLFk9xuXKohRVXO9fQ1I0i4EPCYxPM45CqjoNGR8VgZKFH-6fPE/exec';
-const ADMIN_PASSWORD = 'seizan8989';
-// =============================
+  // ===== 設定 =====
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxJH3Uqp0nqmrloarLFk9xuXKohRVXO9fQ1I0i4EPCYxPM45CqjoNGR8VgZKFH-6fPE/exec';
+  const PASSWORD = 'shizenna2024'; // ← ここでパスワードを変更できます
 
-let allBookings = [];
-let currentTab = 'upcoming';
+  // ===== ログイン =====
+  function doLogin() {
+    const pw = document.getElementById('pw-input').value;
+    if (pw === PASSWORD) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      sessionStorage.setItem('admin_auth', '1');
+      loadBookings();
+      loadYosinhyo();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+      document.getElementById('pw-input').value = '';
+    }
+  }
 
-// ログイン
-function login() {
-  const pw = document.getElementById('password').value;
-  if (pw === ADMIN_PASSWORD) {
+  function doLogout() {
+    sessionStorage.removeItem('admin_auth');
+    location.reload();
+  }
+
+  // セッション維持
+  if (sessionStorage.getItem('admin_auth') === '1') {
     document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    loadBookings();
-  } else {
-    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('app').style.display = 'block';
   }
-}
 
-function logout() {
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('dashboard').style.display = 'none';
-  document.getElementById('password').value = '';
-}
-
-// 予約データ読み込み
-async function loadBookings() {
-  document.getElementById('loading-msg').style.display = 'block';
-  document.getElementById('booking-table').style.display = 'none';
-  document.getElementById('empty-msg').style.display = 'none';
-
-  try {
-    const res = await fetch(GAS_URL + '?action=all');
-    const data = await res.json();
-    allBookings = data.bookings || [];
-    updateSummary();
-    renderTable();
-  } catch(e) {
-    document.getElementById('loading-msg').textContent = 'データの読み込みに失敗しました。GASのURLを確認してください。';
+  // ===== タブ切替 =====
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    if (id === 'tab-stats') loadStats();
   }
-}
 
-// サマリー更新
-function updateSummary() {
-  const today = new Date(); today.setHours(0,0,0,0);
-  const thisMonth = today.getMonth();
-  const thisYear = today.getFullYear();
+  // ===== データ =====
+  let allBookings = [];
+  let allYosinhyo = [];
 
-  const active = allBookings.filter(b => b[6] !== 'キャンセル');
-  const upcoming = active.filter(b => new Date(b[1].replace(/\//g,'-').split(' ')[0]) >= today);
-  const thisMonthBookings = active.filter(b => {
-    const d = new Date(b[1].replace(/\//g,'-').split(' ')[0]);
-    return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
-  });
-
-  document.getElementById('count-upcoming').innerHTML = `${upcoming.length}<span>件</span>`;
-  document.getElementById('count-month').innerHTML = `${thisMonthBookings.length}<span>件</span>`;
-  document.getElementById('count-total').innerHTML = `${active.length}<span>件</span>`;
-}
-
-// タブ切替
-function switchTab(tab) {
-  currentTab = tab;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
-  const titles = { upcoming: '今後の予約', all: 'すべての予約', cancelled: 'キャンセル済み' };
-  document.getElementById('tab-title').textContent = titles[tab];
-  renderTable();
-}
-
-// テーブル描画
-function renderTable() {
-  const search = document.getElementById('search-input').value.toLowerCase();
-  const menuFilter = document.getElementById('menu-filter').value;
-  const today = new Date(); today.setHours(0,0,0,0);
-
-  let filtered = allBookings.filter(b => {
-    const dateStr = b[1] ? b[1].replace(/\//g,'-').split(' ')[0] : '';
-    const date = new Date(dateStr);
-    const status = b[6] || '';
-
-    if (currentTab === 'upcoming') {
-      if (status === 'キャンセル') return false;
-      if (date < today) return false;
-    } else if (currentTab === 'cancelled') {
-      if (status !== 'キャンセル') return false;
-    } else {
-      if (status === 'キャンセル') return false;
+  // 予約データ読み込み
+  async function loadBookings() {
+    document.getElementById('booking-loading').style.display = 'block';
+    document.getElementById('booking-table-wrap').style.display = 'none';
+    document.getElementById('booking-empty').style.display = 'none';
+    try {
+      const res = await fetch(GAS_URL + '?action=all');
+      const data = await res.json();
+      allBookings = (data.bookings || []).reverse();
+      renderBookings(allBookings);
+    } catch(e) {
+      document.getElementById('booking-loading').textContent = 'データの取得に失敗しました';
     }
-
-    if (search && !`${b[2]}${b[4]}`.toLowerCase().includes(search)) return false;
-    if (menuFilter && b[5] !== menuFilter) return false;
-    return true;
-  });
-
-  // 日付順ソート
-  filtered.sort((a, b) => new Date(a[1]) - new Date(b[1]));
-
-  document.getElementById('loading-msg').style.display = 'none';
-
-  if (filtered.length === 0) {
-    document.getElementById('booking-table').style.display = 'none';
-    document.getElementById('empty-msg').style.display = 'block';
-    return;
   }
 
-  document.getElementById('booking-table').style.display = 'table';
-  document.getElementById('empty-msg').style.display = 'none';
+  function renderBookings(rows) {
+    document.getElementById('booking-loading').style.display = 'none';
+    const tbody = document.getElementById('booking-tbody');
+    if (!rows.length) {
+      document.getElementById('booking-empty').style.display = 'block';
+      return;
+    }
+    document.getElementById('booking-table-wrap').style.display = 'block';
+    tbody.innerHTML = rows.map((row, i) => {
+      const [id, datetime, name, kana, phone, email, menu, status, note, date, time, visit] = row;
+      const badgeClass = status === 'キャンセル' ? 'badge-cancelled' : status === '手動入力' ? 'badge-manual' : 'badge-confirmed';
+      const visitBadge = visit === '初診' ? '<span class="badge badge-shinshin">初診</span>' : visit === '再診' ? '<span class="badge badge-saishin">再診</span>' : '';
+      return `<tr>
+        <td style="white-space:nowrap">${datetime || ''}</td>
+        <td>${name || ''}<br><span style="font-size:10px;color:var(--ash)">${kana || ''}</span></td>
+        <td style="font-size:12px">${(menu || '').replace('（', '<br><span style="font-size:10px;color:var(--ash)">（').replace('）', '）</span>')}</td>
+        <td>${visitBadge}</td>
+        <td><span class="badge ${badgeClass}">${status || ''}</span></td>
+        <td>
+          ${status !== 'キャンセル' ? `<button class="btn btn-sm btn-danger" onclick="cancelBooking('${id}', this)">キャンセル</button>` : ''}
+        </td>
+      </tr>`;
+    }).join('');
+  }
 
-  const tbody = document.getElementById('table-body');
-  tbody.innerHTML = '';
+  function filterBookings() {
+    const q = document.getElementById('booking-search').value.toLowerCase();
+    const f = document.getElementById('booking-filter').value;
+    const filtered = allBookings.filter(row => {
+      const name = (row[2] || '').toLowerCase();
+      const kana = (row[3] || '').toLowerCase();
+      const datetime = (row[1] || '').toLowerCase();
+      const status = row[7] || '';
+      const matchQ = !q || name.includes(q) || kana.includes(q) || datetime.includes(q);
+      const matchF = !f || status === f;
+      return matchQ && matchF;
+    });
+    renderBookings(filtered);
+  }
 
-  filtered.forEach(b => {
-    const status = b[6] || '予約確定';
-    const isCancelled = status === 'キャンセル';
-    const isManual = status === '手動入力';
+  async function cancelBooking(id, btn) {
+    if (!confirm('この予約をキャンセルしますか？')) return;
+    btn.disabled = true;
+    btn.textContent = '処理中...';
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'updateStatus', id: id, status: 'キャンセル' })
+      });
+      await loadBookings();
+    } catch(e) {
+      alert('エラーが発生しました');
+      btn.disabled = false;
+      btn.textContent = 'キャンセル';
+    }
+  }
 
-    const badgeClass = isCancelled ? 'status-cancelled' : isManual ? 'status-manual' : 'status-confirmed';
+  // 予診票データ読み込み
+  async function loadYosinhyo() {
+    document.getElementById('yosinhyo-loading').style.display = 'block';
+    document.getElementById('yosinhyo-table-wrap').style.display = 'none';
+    document.getElementById('yosinhyo-empty').style.display = 'none';
+    try {
+      const res = await fetch(GAS_URL + '?action=getYosinhyo');
+      const data = await res.json();
+      const rows = data.yosinhyo || [];
+      allYosinhyo = rows.slice(1).reverse(); // ヘッダー除く
+      renderYosinhyo(allYosinhyo);
+    } catch(e) {
+      document.getElementById('yosinhyo-loading').textContent = 'データの取得に失敗しました';
+    }
+  }
 
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${b[1] || '-'}</td>
-      <td>${b[2] || '-'}</td>
-      <td>${b[3] || '-'}</td>
-      <td style="font-size:12px">${b[4] || '-'}</td>
-      <td style="font-size:12px">${b[5] || '-'}</td>
-      <td><span class="status-badge ${badgeClass}">${status}</span></td>
-      <td>
-        ${isCancelled
-          ? `<button class="action-btn restore" onclick="updateStatus('${b[0]}', '予約確定')">戻す</button>`
-          : `<button class="action-btn" onclick="updateStatus('${b[0]}', 'キャンセル')">キャンセル</button>`
-        }
-      </td>
+  function renderYosinhyo(rows) {
+    document.getElementById('yosinhyo-loading').style.display = 'none';
+    const tbody = document.getElementById('yosinhyo-tbody');
+    if (!rows.length) {
+      document.getElementById('yosinhyo-empty').style.display = 'block';
+      return;
+    }
+    document.getElementById('yosinhyo-table-wrap').style.display = 'block';
+    // 列インデックス: 0=受付日時,1=患者番号,2=名前,3=ふりがな,4=年齢,5=性別
+    // 21=主訴, 55=肝,56=心,57=脾,58=肺,59=腎,60=合計
+    tbody.innerHTML = rows.map((row, i) => {
+      const chief = (row[21] || '').substring(0, 30) + ((row[21] || '').length > 30 ? '...' : '');
+      const fvsTotal = row[60] || '—';
+      return `<tr>
+        <td style="font-size:11px;white-space:nowrap">${row[0] || ''}</td>
+        <td style="font-size:11px">${row[1] || '—'}</td>
+        <td>${row[2] || ''}<br><span style="font-size:10px;color:var(--ash)">${row[3] || ''}</span></td>
+        <td style="font-size:12px">${row[4] || ''}歳・${row[5] || ''}</td>
+        <td style="font-size:11px;color:var(--ash)">${chief}</td>
+        <td style="text-align:center">
+          <span style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold)">${fvsTotal}</span>
+          <span style="font-size:9px;color:var(--ash)">点</span>
+        </td>
+        <td><button class="btn btn-sm" onclick="showYosinhyoDetail(${i})">詳細</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function filterYosinhyo() {
+    const q = document.getElementById('yosinhyo-search').value.toLowerCase();
+    const filtered = allYosinhyo.filter(row => {
+      const name = (row[2] || '').toLowerCase();
+      const kana = (row[3] || '').toLowerCase();
+      return !q || name.includes(q) || kana.includes(q);
+    });
+    renderYosinhyo(filtered);
+  }
+
+  // 予診票詳細表示
+  function showYosinhyoDetail(i) {
+    const row = allYosinhyo[i];
+    const fvsMax = 8; // 各臓器最大8点（0-4×2問）
+    document.getElementById('modal-title').textContent = `${row[2]} 様　予診票詳細`;
+
+    const body = document.getElementById('modal-body');
+    body.innerHTML = `
+      <div class="detail-section">
+        <div class="detail-section-title">基本情報</div>
+        <div class="detail-grid">
+          <div class="detail-row"><span class="detail-key">受付日時</span><span class="detail-val">${row[0] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">患者番号</span><span class="detail-val">
+            <input type="text" value="${row[1] || ''}" style="border:none;border-bottom:1px solid var(--border);padding:2px 4px;font-family:inherit;font-size:12px;width:120px;outline:none" id="patient-no-input" placeholder="未設定">
+            <button class="btn btn-sm" style="margin-left:8px" onclick="savePatientNo(${i})">保存</button>
+          </span></div>
+          <div class="detail-row"><span class="detail-key">お名前</span><span class="detail-val">${row[2] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">ふりがな</span><span class="detail-val">${row[3] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">年齢</span><span class="detail-val">${row[4] || ''}歳</span></div>
+          <div class="detail-row"><span class="detail-key">性別</span><span class="detail-val">${row[5] || ''}</span></div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">安全確認</div>
+        <div class="detail-grid">
+          <div class="detail-row"><span class="detail-key">感染症</span><span class="detail-val">${row[6] || ''}${row[7] ? '：' + row[7] : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">妊娠</span><span class="detail-val">${row[8] || ''}${row[9] ? '：' + row[9] + 'ヶ月' : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">アレルギー</span><span class="detail-val">${row[10] || ''}${row[11] ? '：' + row[11] : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">アルコール</span><span class="detail-val">${row[12] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">皮フトラブル</span><span class="detail-val">${row[13] || ''}${row[14] ? '：' + row[14] : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">血圧</span><span class="detail-val">${row[15] ? '最高' + row[15] : ''}${row[16] ? '／最低' + row[16] : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">体温</span><span class="detail-val">${row[17] ? row[17] + '℃' : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">服薬</span><span class="detail-val">${row[18] || ''}${row[19] ? '：' + row[19] : ''}</span></div>
+        </div>
+        ${row[20] ? `<div class="detail-row" style="margin-top:8px"><span class="detail-key">現在治療中の病気</span><span class="detail-val">${row[20]}</span></div>` : ''}
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">主訴・お体の状態</div>
+        <div class="detail-row" style="flex-direction:column;gap:4px">
+          <span class="detail-key">現在つらいところ</span>
+          <span class="detail-val" style="line-height:1.8">${(row[21] || '').replace(/\n/g, '<br>')}</span>
+        </div>
+        <div class="detail-grid" style="margin-top:12px">
+          <div class="detail-row"><span class="detail-key">他院受診</span><span class="detail-val">${row[22] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">体質</span><span class="detail-val">${row[23] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">精神状態</span><span class="detail-val">${row[24] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">頭痛</span><span class="detail-val">${row[25] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">のど</span><span class="detail-val">${row[26] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">胸</span><span class="detail-val">${row[27] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">冷え</span><span class="detail-val">${row[28] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">こり</span><span class="detail-val">${row[29] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">むくみ</span><span class="detail-val">${row[30] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">その他</span><span class="detail-val">${row[31] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">たん</span><span class="detail-val">${row[32] || ''}</span></div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">生活習慣</div>
+        <div class="detail-grid">
+          <div class="detail-row"><span class="detail-key">食欲</span><span class="detail-val">${row[33] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">間食</span><span class="detail-val">${row[34] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">好きな味</span><span class="detail-val">${row[35] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">嫌いな味</span><span class="detail-val">${row[36] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">便通</span><span class="detail-val">${row[37] || ''}${row[38] ? '　' + row[38] + '回/日' : ''}${row[39] ? '　' + row[39] : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">尿</span><span class="detail-val">${row[40] ? row[40] + '回/日' : ''}${row[41] ? '　' + row[41] : ''}${row[42] ? '　排尿痛' + row[42] : ''}${row[43] ? '　残尿' + row[43] : ''}${row[44] ? '　量' + row[44] : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">汗</span><span class="detail-val">${row[45] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">睡眠</span><span class="detail-val">${row[46] ? row[46] + '時間' : ''}${row[47] ? '　' + row[47] : ''}${row[48] ? '〜' + row[48] : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">睡眠状態</span><span class="detail-val">${row[49] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">月経</span><span class="detail-val">${row[50] || ''}${row[51] ? '　周期' + row[51] + '日' : ''}${row[52] ? '　生理痛' + row[52] : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">嗜好</span><span class="detail-val">${row[54] ? 'ビール' + row[54] + '本' : ''}${row[55] ? '　日本酒' + row[55] + '合' : ''}${row[56] ? '　たばこ' + row[56] + '本' : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">食の傾向</span><span class="detail-val">${row[57] || ''}</span></div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">FVSv2スコア</div>
+        <div class="fvs-score-wrap">
+          ${[['肝（筋肉・からだ）', row[58]], ['心（精神・こころ）', row[59]], ['脾（疲労・睡眠）', row[60]], ['肺（自律神経）', row[61]], ['腎（脳機能）', row[62]]].map(([label, score]) => `
+            <div class="fvs-score-row">
+              <span class="fvs-score-label">${label}</span>
+              <div class="fvs-score-track">
+                <div class="fvs-score-fill" style="width:${Math.min(100, (score/8)*100)}%"></div>
+              </div>
+              <span class="fvs-score-num">${score || 0}</span>
+            </div>
+          `).join('')}
+          <div style="text-align:right;margin-top:8px;font-size:12px;color:var(--ash)">
+            合計：<span style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)">${row[63] || 0}</span>点 / 40点
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">院長メモ</div>
+        <textarea class="memo-area" id="memo-input" placeholder="聴取内容・所見・メモなどをご記入ください">${row[row.length-1] || ''}</textarea>
+        <div style="margin-top:8px;text-align:right">
+          <button class="btn btn-primary" onclick="saveMemo(${i})">メモを保存</button>
+        </div>
+      </div>
     `;
-    tbody.appendChild(tr);
-  });
-}
 
-// ステータス更新
-async function updateStatus(id, newStatus) {
-  const label = newStatus === 'キャンセル' ? 'キャンセル' : '予約確定に戻す';
-  if (!confirm(`この予約を${label}しますか？`)) return;
+    document.getElementById('modal-overlay').classList.add('open');
+  }
 
-  try {
-    const res = await fetch(GAS_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'updateStatus', id: id, status: newStatus })
-    });
-    const data = await res.json();
-    if (data.status === 'ok') {
-      await loadBookings();
-    } else {
-      alert('更新に失敗しました');
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+
+  function printModal() {
+    window.print();
+  }
+
+  // 院長メモ保存
+  async function saveMemo(rowIndex) {
+    const memo = document.getElementById('memo-input').value;
+    const row = allYosinhyo[rowIndex];
+    const timestamp = row[0];
+    const name = row[2];
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'saveMemo', timestamp, name, memo })
+      });
+      alert('メモを保存しました');
+    } catch(e) {
+      alert('保存に失敗しました');
     }
-  } catch(e) {
-    alert('通信エラーが発生しました');
-  }
-}
-
-// 手動予約モーダル
-function openAddModal() {
-  document.getElementById('add-modal').classList.add('open');
-}
-function closeModal() {
-  document.getElementById('add-modal').classList.remove('open');
-  ['m-datetime','m-name','m-phone','m-email','m-note'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('m-menu').value = '';
-}
-
-// 手動予約送信
-async function submitManual() {
-  const datetime = document.getElementById('m-datetime').value.trim();
-  const name = document.getElementById('m-name').value.trim();
-  const phone = document.getElementById('m-phone').value.trim();
-  const email = document.getElementById('m-email').value.trim();
-  const menu = document.getElementById('m-menu').value;
-  const note = document.getElementById('m-note').value.trim();
-
-  if (!datetime || !name || !phone || !menu) {
-    alert('日時・お名前・電話番号・メニューは必須です');
-    return;
   }
 
-  try {
-    const res = await fetch(GAS_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'manual',
-        datetime, name, phone, email, menu, note
-      })
-    });
-    const data = await res.json();
-    if (data.status === 'ok') {
-      closeModal();
-      await loadBookings();
-    } else {
-      alert('登録に失敗しました');
+  // 患者番号保存
+  async function savePatientNo(rowIndex) {
+    const no = document.getElementById('patient-no-input').value;
+    const row = allYosinhyo[rowIndex];
+    const timestamp = row[0];
+    const name = row[2];
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'savePatientNo', timestamp, name, patientNo: no })
+      });
+      allYosinhyo[rowIndex][1] = no;
+      alert('患者番号を保存しました');
+    } catch(e) {
+      alert('保存に失敗しました');
     }
-  } catch(e) {
-    alert('通信エラーが発生しました');
   }
-}
+
+  // ===== 統計 =====
+  async function loadStats() {
+    try {
+      // 予約データ
+      const r1 = await fetch(GAS_URL + '?action=all');
+      const d1 = await r1.json();
+      const bookings = d1.bookings || [];
+
+      const confirmed = bookings.filter(r => r[7] !== 'キャンセル');
+      const now = new Date();
+      const thisMonth = confirmed.filter(r => {
+        const d = new Date(r[1]);
+        return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+      });
+      const shinshin = confirmed.filter(r => r[11] === '初診');
+
+      document.getElementById('stat-total-booking').textContent = confirmed.length;
+      document.getElementById('stat-this-month').textContent = thisMonth.length;
+      document.getElementById('stat-shinshin').textContent = shinshin.length;
+
+      // メニュー別
+      const menuCount = {};
+      confirmed.forEach(r => {
+        const m = (r[6] || '').split('（')[0];
+        menuCount[m] = (menuCount[m] || 0) + 1;
+      });
+      const maxMenu = Math.max(...Object.values(menuCount), 1);
+      document.getElementById('chart-menu').innerHTML = Object.entries(menuCount).map(([k,v]) => `
+        <div class="bar-row">
+          <span class="bar-label">${k}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${(v/maxMenu)*100}%"></div></div>
+          <span class="bar-val">${v}件</span>
+        </div>
+      `).join('');
+
+      // 月別
+      const monthCount = {};
+      confirmed.forEach(r => {
+        const d = new Date(r[1]);
+        if (!isNaN(d)) {
+          const key = `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}`;
+          monthCount[key] = (monthCount[key] || 0) + 1;
+        }
+      });
+      const sortedMonths = Object.keys(monthCount).sort();
+      const maxMonth = Math.max(...Object.values(monthCount), 1);
+      document.getElementById('chart-monthly').innerHTML = sortedMonths.map(k => `
+        <div class="bar-row">
+          <span class="bar-label">${k}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${(monthCount[k]/maxMonth)*100}%"></div></div>
+          <span class="bar-val">${monthCount[k]}件</span>
+        </div>
+      `).join('');
+
+      // 予診票統計
+      const r2 = await fetch(GAS_URL + '?action=getYosinhyo');
+      const d2 = await r2.json();
+      const yRows = (d2.yosinhyo || []).slice(1);
+      document.getElementById('stat-yosinhyo').textContent = yRows.length;
+
+      if (yRows.length > 0) {
+        const fvsAvg = Math.round(yRows.reduce((sum, r) => sum + (parseInt(r[63]) || 0), 0) / yRows.length);
+        document.getElementById('stat-fvs-avg').textContent = fvsAvg;
+
+        const fvsLabels = ['肝', '心', '脾', '肺', '腎'];
+        const fvsAvgs = [58,59,60,61,62].map((col, i) => ({
+          label: fvsLabels[i],
+          avg: Math.round(yRows.reduce((sum, r) => sum + (parseInt(r[col]) || 0), 0) / yRows.length * 10) / 10
+        }));
+        const maxFvs = Math.max(...fvsAvgs.map(f => f.avg), 1);
+        document.getElementById('chart-fvs').innerHTML = fvsAvgs.map(f => `
+          <div class="bar-row">
+            <span class="bar-label">${f.label}</span>
+            <div class="bar-track"><div class="bar-fill" style="width:${(f.avg/8)*100}%"></div></div>
+            <span class="bar-val">${f.avg}点</span>
+          </div>
+        `).join('');
+      }
+
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  // 初期読み込み
+  if (sessionStorage.getItem('admin_auth') === '1') {
+    loadBookings();
+    loadYosinhyo();
+  }
 </script>
 </body>
 </html>
