@@ -1461,7 +1461,7 @@
       });
       document.getElementById('form-area').classList.add('hidden');
       document.getElementById('complete-area').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('complete-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
     } catch(e) {
       document.getElementById('error-area').textContent = 'エラーが発生しました。しばらくしてからお試しください。';
       document.getElementById('error-area').classList.remove('hidden');
