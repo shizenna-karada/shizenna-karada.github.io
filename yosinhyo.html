@@ -1407,6 +1407,10 @@
       return;
     }
 
+    // 送信中表示
+    const submitBtn = document.querySelector('.btn-submit');
+    submitBtn.disabled = true;
+    submitBtn.querySelector('span').textContent = '送信中...';
     const payload = {
       type: 'yosinhyo',
       // STEP1
@@ -1513,6 +1517,8 @@
       const err = document.getElementById('error-area');
       err.textContent = 'エラーが発生しました。しばらくしてから再度お試しください。';
       err.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.querySelector('span').textContent = '送信する';
     }
   }
 </script>
