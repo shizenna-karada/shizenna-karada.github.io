@@ -1136,10 +1136,36 @@
       </div>
     </div>
 
-    <!-- STEP 4 お客様情報 -->
-    <div class="step hidden" id="step-info">
+    <!-- STEP 4 初診・再診 -->
+    <div class="step hidden" id="step-visit">
       <div class="step-header">
         <span class="step-num">04</span>
+        <span class="step-title">初診・再診をお選びください</span>
+        <div class="step-connector"></div>
+      </div>
+
+      <div class="menu-grid">
+        <button class="menu-btn" data-visit="初診" onclick="selectVisit(this)">
+          <div class="menu-check"></div>
+          <div class="menu-info">
+            <div class="menu-name">初診</div>
+            <div class="menu-duration">はじめてご来院の方</div>
+          </div>
+        </button>
+        <button class="menu-btn" data-visit="再診" onclick="selectVisit(this)">
+          <div class="menu-check"></div>
+          <div class="menu-info">
+            <div class="menu-name">再診</div>
+            <div class="menu-duration">2回目以降のご来院の方</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 5 お客様情報 -->
+    <div class="step hidden" id="step-info">
+      <div class="step-header">
+        <span class="step-num">05</span>
         <span class="step-title">お客様情報のご入力</span>
         <div class="step-connector"></div>
       </div>
@@ -1169,10 +1195,10 @@
       <p class="notice" style="margin-top:20px;">すべての必須項目を入力すると、確認画面が表示されます。</p>
     </div>
 
-    <!-- STEP 5 確認・送信 -->
+    <!-- STEP 6 確認・送信 -->
     <div class="step hidden" id="step-confirm">
       <div class="step-header">
-        <span class="step-num">05</span>
+        <span class="step-num">06</span>
         <span class="step-title">ご確認・送信</span>
         <div class="step-connector"></div>
       </div>
@@ -1189,6 +1215,10 @@
         <div class="confirm-row">
           <span class="confirm-label">メニュー</span>
           <span class="confirm-value" id="conf-menu">—</span>
+        </div>
+        <div class="confirm-row">
+          <span class="confirm-label">初診・再診</span>
+          <span class="confirm-value" id="conf-visit">—</span>
         </div>
         <div class="confirm-row">
           <span class="confirm-label">お名前</span>
@@ -1215,7 +1245,7 @@
 
   </div>
 
-  <!-- 完了 -->
+  <!-- 完了（再診） -->
   <div id="complete-area" class="complete-wrap hidden">
     <span class="complete-icon">✦</span>
     <h2 class="complete-title">ご予約ありがとうございます</h2>
@@ -1225,6 +1255,29 @@
       当日お会いできることを<br>
       楽しみにしております。
     </p>
+  </div>
+
+  <!-- 完了（初診） -->
+  <div id="complete-area-shinshin" class="complete-wrap hidden">
+    <span class="complete-icon">✦</span>
+    <h2 class="complete-title">ご予約ありがとうございます</h2>
+    <p class="complete-text">
+      ご予約を承りました。<br>
+      確認メールをお送りしましたのでご確認ください。<br><br>
+      当日お会いできることを楽しみにしております。
+    </p>
+    <div style="margin-top:40px;padding:28px;background:white;border:1px solid var(--border);position:relative;">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--gold))"></div>
+      <p style="font-size:11px;letter-spacing:0.2em;color:var(--gold);margin-bottom:12px">初診の方へ</p>
+      <p style="font-size:13px;color:var(--ink);line-height:2;letter-spacing:0.05em;margin-bottom:20px">
+        当日までに予診票のご入力をお願いします。<br>
+        今すぐ入力できる方はこちらからどうぞ。<br>
+        お時間がない方は、確認メールのURLから<br>当日までにご入力ください。
+      </p>
+      <a href="https://shizenna-karada.github.io/yosinhyo.html" style="display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--paper);text-decoration:none;padding:16px 32px;font-family:'Noto Serif JP',serif;font-size:13px;letter-spacing:0.2em;">
+        予診票を入力する　→
+      </a>
+    </div>
   </div>
 
 </main>
@@ -1380,22 +1433,30 @@
     scrollToStep('step-menu');
   }
 
+  let selectedVisit = null;
+
+  function selectVisit(btn) {
+    document.querySelectorAll('#step-visit .menu-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedVisit = btn.dataset.visit;
+    showStep('step-info');
+    scrollToStep('step-info');
+    setTimeout(checkReadyToConfirm, 100);
+  }
+
   function selectMenu(btn) {
     document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     selectedMenu = btn.dataset.menu;
-    showStep('step-info');
-    scrollToStep('step-info');
-
-    // 自動スクロール後に確認ステップも更新
-    setTimeout(checkReadyToConfirm, 100);
+    showStep('step-visit');
+    scrollToStep('step-visit');
   }
 
   function checkReadyToConfirm() {
     const name = document.getElementById('input-name').value.trim();
     const email = document.getElementById('input-email').value.trim();
     const phone = document.getElementById('input-phone').value.trim();
-    if (selectedDate && selectedTime && selectedMenu && name && email && phone) {
+    if (selectedDate && selectedTime && selectedMenu && selectedVisit && name && email && phone) {
       updateConfirm();
       showStep('step-confirm');
     }
@@ -1412,6 +1473,7 @@
     document.getElementById('conf-date').textContent = `${d.getFullYear()}年${months[d.getMonth()]}${d.getDate()}日（${days[d.getDay()]}）`;
     document.getElementById('conf-time').textContent = selectedTime + '〜';
     document.getElementById('conf-menu').textContent = selectedMenu;
+    document.getElementById('conf-visit').textContent = selectedVisit;
     document.getElementById('conf-name').textContent = document.getElementById('input-name').value;
     document.getElementById('conf-email').textContent = document.getElementById('input-email').value;
     document.getElementById('conf-phone').textContent = document.getElementById('input-phone').value;
@@ -1450,7 +1512,7 @@
     const days = ['日','月','火','水','木','金','土'];
     const datetime = `${d.getFullYear()}年${months[d.getMonth()]}${d.getDate()}日（${days[d.getDay()]}） ${selectedTime}〜`;
 
-    const payload = { name, kana, email, phone, note, datetime, menu: selectedMenu, date: formatDate(d), time: selectedTime };
+    const payload = { name, kana, email, phone, note, datetime, menu: selectedMenu, date: formatDate(d), time: selectedTime, visit: selectedVisit };
 
     try {
       await fetch(GAS_URL, {
@@ -1460,8 +1522,13 @@
         body: JSON.stringify(payload)
       });
       document.getElementById('form-area').classList.add('hidden');
-      document.getElementById('complete-area').classList.remove('hidden');
-      document.getElementById('complete-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (selectedVisit === '初診') {
+        document.getElementById('complete-area-shinshin').classList.remove('hidden');
+        document.getElementById('complete-area-shinshin').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        document.getElementById('complete-area').classList.remove('hidden');
+        document.getElementById('complete-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     } catch(e) {
       document.getElementById('error-area').textContent = 'エラーが発生しました。しばらくしてからお試しください。';
       document.getElementById('error-area').classList.remove('hidden');
