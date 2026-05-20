@@ -587,6 +587,7 @@
   <div class="step-panel active" id="panel-1">
     <span class="step-title">Step 01</span>
     <h2 class="step-heading">基本情報・安全確認</h2>
+    <p style="font-size:11px;color:var(--ash);letter-spacing:0.08em;margin-bottom:24px;">※自分に当てはまらない項目は回答する必要はありません</p>
 
     <div class="form-section">
       <div class="form-section-title">基本情報</div>
@@ -742,6 +743,7 @@
   <div class="step-panel" id="panel-2">
     <span class="step-title">Step 02</span>
     <h2 class="step-heading">現在のお体の状態</h2>
+    <p style="font-size:11px;color:var(--ash);letter-spacing:0.08em;margin-bottom:24px;">※自分に当てはまらない項目は回答する必要はありません</p>
 
     <div class="form-section">
       <div class="form-section-title">主訴・受診歴</div>
@@ -903,6 +905,7 @@
   <div class="step-panel" id="panel-3">
     <span class="step-title">Step 03</span>
     <h2 class="step-heading">生活習慣</h2>
+    <p style="font-size:11px;color:var(--ash);letter-spacing:0.08em;margin-bottom:24px;">※自分に当てはまらない項目は回答する必要はありません</p>
 
     <div class="form-section">
       <div class="form-section-title">食事</div>
@@ -961,9 +964,11 @@
             <span class="unit-label">回/日</span>
           </div>
           <div class="radio-group" style="align-items:center">
+            <div class="radio-btn" onclick="selectRadio(this,'stool-type')">普通</div>
             <div class="radio-btn" onclick="selectRadio(this,'stool-type')">硬</div>
             <div class="radio-btn" onclick="selectRadio(this,'stool-type')">軟</div>
             <div class="radio-btn" onclick="selectRadio(this,'stool-type')">下痢</div>
+            <div class="radio-btn" onclick="selectRadio(this,'stool-type')">便秘</div>
           </div>
         </div>
         <input type="hidden" id="stool-type">
