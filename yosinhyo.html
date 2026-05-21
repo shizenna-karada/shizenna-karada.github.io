@@ -741,7 +741,7 @@
   <!-- ===== STEP 2 お体の状態 ===== -->
   <div class="step-panel" id="panel-2">
     <span class="step-title">Step 02</span>
-    <h2 class="step-heading">現在のお体の状態</h2>
+    <h2 class="step-heading">現在のお身体の状態</h2>
     <p style="font-size:11px;color:var(--ash);letter-spacing:0.08em;margin-bottom:24px;">※自分に当てはまらない項目は回答する必要はありません</p>
 
     <div class="form-section">
@@ -769,6 +769,7 @@
           <div id="hosp-other-detail" style="display:none;padding-left:20px">
             <input type="text" id="hosp-other-name" placeholder="具体的に">
           </div>
+          <label class="check-item"><input type="checkbox" id="hosp-none"><span>受診していない</span></label>
         </div>
       </div>
 
@@ -957,18 +958,18 @@
           <div class="radio-btn" onclick="selectRadio(this,'stool-cond')">不良</div>
         </div>
         <input type="hidden" id="stool-cond">
-        <div class="input-row-3" style="margin-top:8px">
-          <div class="input-unit">
-            <input type="number" id="stool-count" placeholder="1" min="0" max="20">
-            <span class="unit-label">回/日</span>
-          </div>
-          <div class="radio-group" style="align-items:center">
-            <div class="radio-btn" onclick="selectRadio(this,'stool-type')">普通</div>
-            <div class="radio-btn" onclick="selectRadio(this,'stool-type')">硬</div>
-            <div class="radio-btn" onclick="selectRadio(this,'stool-type')">軟</div>
-            <div class="radio-btn" onclick="selectRadio(this,'stool-type')">下痢</div>
-            <div class="radio-btn" onclick="selectRadio(this,'stool-type')">便秘</div>
-          </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <input type="number" id="stool-days" placeholder="3" min="1" max="30" style="width:70px;padding:10px;border:1px solid var(--border);background:white;font-family:inherit;font-size:14px;outline:none;">
+          <span style="font-size:13px;color:var(--ash)">日に</span>
+          <input type="number" id="stool-count" placeholder="1" min="0" max="20" style="width:70px;padding:10px;border:1px solid var(--border);background:white;font-family:inherit;font-size:14px;outline:none;">
+          <span style="font-size:13px;color:var(--ash)">回</span>
+        </div>
+        <div class="radio-group" style="margin-top:8px">
+          <div class="radio-btn" onclick="selectRadio(this,'stool-type')">普通</div>
+          <div class="radio-btn" onclick="selectRadio(this,'stool-type')">硬</div>
+          <div class="radio-btn" onclick="selectRadio(this,'stool-type')">軟</div>
+          <div class="radio-btn" onclick="selectRadio(this,'stool-type')">下痢</div>
+          <div class="radio-btn" onclick="selectRadio(this,'stool-type')">便秘</div>
         </div>
         <input type="hidden" id="stool-type">
       </div>
@@ -1037,11 +1038,11 @@
 
       <div class="form-row">
         <label>睡眠時間</label>
-        <div class="input-row-3">
-          <div class="input-unit">
-            <input type="number" id="sleep-hours" placeholder="7" min="0" max="24">
-            <span class="unit-label">時間</span>
-          </div>
+        <div class="input-unit" style="max-width:200px;margin-bottom:12px">
+          <input type="number" id="sleep-hours" placeholder="7" min="0" max="24">
+          <span class="unit-label">時間</span>
+        </div>
+        <div class="input-row-2">
           <div class="input-unit">
             <input type="text" id="sleep-from" placeholder="23:00">
             <span class="unit-label">就寝</span>
@@ -1439,6 +1440,7 @@
       hospSekkotsu: document.getElementById('hosp-sekkotsu').checked ? '接骨院' : '',
       hospSeitai: document.getElementById('hosp-seitai').checked ? '整体' : '',
       hospOther: document.getElementById('hosp-other').checked ? document.getElementById('hosp-other-name').value : '',
+      hospNone: document.getElementById('hosp-none').checked ? '受診していない' : '',
       constitution: getChecked('constitution'),
       mental: getChecked('mental'),
       headache: getChecked('headache'),
@@ -1455,6 +1457,7 @@
       tasteLike: getChecked('taste-like'),
       tasteDislike: getChecked('taste-dislike'),
       stoolCond: document.getElementById('stool-cond').value,
+      stoolDays: document.getElementById('stool-days').value,
       stoolCount: document.getElementById('stool-count').value,
       stoolType: document.getElementById('stool-type').value,
       urineCount: document.getElementById('urine-count').value,
