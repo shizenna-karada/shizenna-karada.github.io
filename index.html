@@ -1517,7 +1517,8 @@
     try {
       const res = await fetch(GAS_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'cors',
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload)
       });
       const result = await res.json();
@@ -1528,7 +1529,6 @@
         document.getElementById('error-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
         btn.disabled = false;
         btn.querySelector('span').textContent = 'この内容で予約を確定する';
-        // 予約済みスロットを更新してグレーアウトを反映
         await fetchBookedSlots();
         if (selectedDate) updateTimeSlots(formatDate(selectedDate));
         return;
