@@ -1515,12 +1515,25 @@
     const payload = { name, kana, email, phone, note, datetime, menu: selectedMenu, date: formatDate(d), time: selectedTime, visit: selectedVisit };
 
     try {
-      await fetch(GAS_URL, {
+      const res = await fetch(GAS_URL, {
         method: 'POST',
-        mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
+      const result = await res.json();
+
+      if (result.status === 'duplicate') {
+        document.getElementById('error-area').textContent = '申し訳ありませんが、この時間帯は只今の操作中に予約が入ってしまいました。別の時間をお選びください。';
+        document.getElementById('error-area').classList.remove('hidden');
+        document.getElementById('error-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        btn.disabled = false;
+        btn.querySelector('span').textContent = 'この内容で予約を確定する';
+        // 予約済みスロットを更新してグレーアウトを反映
+        await fetchBookedSlots();
+        if (selectedDate) updateTimeSlots(formatDate(selectedDate));
+        return;
+      }
+
       document.getElementById('form-area').classList.add('hidden');
       if (selectedVisit === '初診') {
         document.getElementById('complete-area-shinshin').classList.remove('hidden');

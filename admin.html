@@ -543,6 +543,82 @@
     letter-spacing: 0.1em;
   }
 
+  /* 日付グループ */
+  .date-group { margin-bottom: 24px; }
+  .date-group-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 20px;
+    background: var(--ink);
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .date-group-header:hover { background: #2a2118; }
+  .date-group-header.today { background: var(--gold); }
+  .date-group-header.past { background: #4a4540; }
+  .date-group-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+  }
+  .date-group-day {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    opacity: 0.7;
+  }
+  .date-group-count {
+    margin-left: auto;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    opacity: 0.8;
+  }
+  .date-group-arrow {
+    font-size: 12px;
+    transition: transform 0.2s;
+    opacity: 0.6;
+  }
+  .date-group-header.collapsed .date-group-arrow { transform: rotate(-90deg); }
+  .date-group-body { display: block; }
+  .date-group-body.collapsed { display: none; }
+  .date-group-body table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .date-group-body th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    color: var(--ash);
+    border-bottom: 1px solid var(--border);
+    background: #faf8f4;
+  }
+  .date-group-body td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(184,151,90,0.1);
+    vertical-align: middle;
+  }
+  .date-group-body tr:hover td { background: #faf8f4; }
+
+  .past-toggle {
+    text-align: center;
+    padding: 12px;
+    font-size: 12px;
+    color: var(--ash);
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    border: 1px dashed var(--border);
+    margin-bottom: 24px;
+    transition: all 0.2s;
+  }
+  .past-toggle:hover { border-color: var(--gold); color: var(--ink); }
+
   .loading {
     text-align: center;
     padding: 40px;
@@ -621,21 +697,7 @@
       </div>
 
       <div id="booking-loading" class="loading">読み込み中...</div>
-      <div id="booking-table-wrap" style="display:none">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>日時</th>
-              <th>お名前</th>
-              <th>メニュー</th>
-              <th>初再診</th>
-              <th>ステータス</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody id="booking-tbody"></tbody>
-        </table>
-      </div>
+      <div id="booking-list-wrap" style="display:none"></div>
       <div id="booking-empty" class="empty-state" style="display:none">予約データがありません</div>
     </div>
 
@@ -800,27 +862,129 @@
 
   function renderBookings(rows) {
     document.getElementById('booking-loading').style.display = 'none';
-    const tbody = document.getElementById('booking-tbody');
+    const wrap = document.getElementById('booking-list-wrap');
     if (!rows.length) {
       document.getElementById('booking-empty').style.display = 'block';
+      wrap.style.display = 'none';
       return;
     }
-    document.getElementById('booking-table-wrap').style.display = 'block';
-    tbody.innerHTML = rows.map((row, i) => {
+    document.getElementById('booking-empty').style.display = 'none';
+    wrap.style.display = 'block';
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const todayStr = formatDateStr(today);
+
+    // 日付ごとにグループ化
+    const groups = {};
+    rows.forEach(row => {
+      const [id, datetime, name, kana, phone, email, menu, status, note, date, time, visit] = row;
+      const key = date ? String(date).trim() : '';
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(row);
+    });
+
+    // 日付でソート
+    const sortedKeys = Object.keys(groups).sort((a, b) => {
+      if (!a) return 1; if (!b) return -1;
+      return a > b ? 1 : -1;
+    });
+
+    // 今日以降・過去に分類
+    const futureKeys = sortedKeys.filter(k => k >= todayStr || !k);
+    const pastKeys = sortedKeys.filter(k => k && k < todayStr).reverse();
+
+    const days = ['日','月','火','水','木','金','土'];
+    const months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+
+    function formatKeyLabel(key) {
+      if (!key) return '日付不明';
+      const d = new Date(key);
+      if (isNaN(d)) return key;
+      return `${d.getFullYear()}年${months[d.getMonth()]}${d.getDate()}日（${days[d.getDay()]}）`;
+    }
+
+    function renderRow(row) {
       const [id, datetime, name, kana, phone, email, menu, status, note, date, time, visit] = row;
       const badgeClass = status === 'キャンセル' ? 'badge-cancelled' : status === '手動入力' ? 'badge-manual' : 'badge-confirmed';
       const visitBadge = visit === '初診' ? '<span class="badge badge-shinshin">初診</span>' : visit === '再診' ? '<span class="badge badge-saishin">再診</span>' : '';
       return `<tr>
-        <td style="white-space:nowrap">${datetime || ''}</td>
+        <td style="white-space:nowrap;font-weight:500">${time ? time + '〜' : datetime || ''}</td>
         <td>${name || ''}<br><span style="font-size:10px;color:var(--ash)">${kana || ''}</span></td>
-        <td style="font-size:12px">${(menu || '').replace('（', '<br><span style="font-size:10px;color:var(--ash)">（').replace('）', '）</span>')}</td>
+        <td style="font-size:12px">${(menu || '').split('（')[0]}<br><span style="font-size:10px;color:var(--ash)">${phone || ''}</span></td>
         <td>${visitBadge}</td>
         <td><span class="badge ${badgeClass}">${status || ''}</span></td>
-        <td>
-          ${status !== 'キャンセル' ? `<button class="btn btn-sm btn-danger" onclick="cancelBooking('${id}', this)">キャンセル</button>` : ''}
-        </td>
+        <td>${status !== 'キャンセル' ? `<button class="btn btn-sm btn-danger" onclick="cancelBooking('${id}', this)">キャンセル</button>` : ''}</td>
       </tr>`;
-    }).join('');
+    }
+
+    function renderGroup(key, isToday, isPast) {
+      const groupRows = groups[key].sort((a, b) => (a[10] || '') > (b[10] || '') ? 1 : -1);
+      const confirmedCount = groupRows.filter(r => r[7] !== 'キャンセル').length;
+      const headerClass = isToday ? 'today' : isPast ? 'past' : '';
+      const todayLabel = isToday ? '　<span style="font-size:10px;background:white;color:var(--gold);padding:2px 8px">今日</span>' : '';
+      return `
+        <div class="date-group">
+          <div class="date-group-header ${headerClass}" onclick="toggleGroup(this)">
+            <span class="date-group-date">${formatKeyLabel(key)}</span>
+            ${todayLabel}
+            <span class="date-group-count">${confirmedCount}件</span>
+            <span class="date-group-arrow">▼</span>
+          </div>
+          <div class="date-group-body">
+            <table>
+              <thead><tr><th>時間</th><th>お名前</th><th>メニュー・電話</th><th>初再診</th><th>状態</th><th>操作</th></tr></thead>
+              <tbody>${groupRows.map(renderRow).join('')}</tbody>
+            </table>
+          </div>
+        </div>`;
+    }
+
+    let html = '';
+
+    // 今日以降
+    if (futureKeys.length) {
+      futureKeys.forEach(key => {
+        html += renderGroup(key, key === todayStr, false);
+      });
+    }
+
+    // 過去（折りたたみ）
+    if (pastKeys.length) {
+      const pastId = 'past-section-' + Date.now();
+      html += `<div class="past-toggle" onclick="togglePast('${pastId}')">▼ 過去の予約（${pastKeys.length}日分）を表示</div>`;
+      html += `<div id="${pastId}" style="display:none">`;
+      pastKeys.forEach(key => {
+        html += renderGroup(key, false, true);
+      });
+      html += `</div>`;
+    }
+
+    wrap.innerHTML = html;
+  }
+
+  function toggleGroup(header) {
+    header.classList.toggle('collapsed');
+    header.nextElementSibling.classList.toggle('collapsed');
+  }
+
+  function togglePast(id) {
+    const el = document.getElementById(id);
+    const toggle = el.previousElementSibling;
+    if (el.style.display === 'none') {
+      el.style.display = 'block';
+      toggle.textContent = '▲ 過去の予約を非表示';
+    } else {
+      el.style.display = 'none';
+      toggle.textContent = '▼ 過去の予約を表示';
+    }
+  }
+
+  function formatDateStr(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
   }
 
   function filterBookings() {
@@ -885,7 +1049,7 @@
     // 21=主訴, 55=肝,56=心,57=脾,58=肺,59=腎,60=合計
     tbody.innerHTML = rows.map((row, i) => {
       const chief = (row[21] || '').substring(0, 30) + ((row[21] || '').length > 30 ? '...' : '');
-      const fvsTotal = row[60] || '—';
+      const fvsTotal = row[63] || '—';
       return `<tr>
         <td style="font-size:11px;white-space:nowrap">${row[0] || ''}</td>
         <td style="font-size:11px">${row[1] || '—'}</td>
