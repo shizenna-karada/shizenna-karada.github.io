@@ -848,7 +848,7 @@
   // 予約データ読み込み
   async function loadBookings() {
     document.getElementById('booking-loading').style.display = 'block';
-    document.getElementById('booking-table-wrap').style.display = 'none';
+    document.getElementById('booking-list-wrap').style.display = 'none';
     document.getElementById('booking-empty').style.display = 'none';
     try {
       const res = await fetch(GAS_URL + '?action=all');
