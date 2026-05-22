@@ -1191,6 +1191,30 @@
           <label>ご要望・ご症状など（任意）</label>
           <textarea id="input-note" placeholder="お気軽にご記入ください。"></textarea>
         </div>
+        <div class="form-field">
+          <label>職種・立場<span class="req">必須</span></label>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;font-weight:300;letter-spacing:0.05em">
+              <input type="radio" name="occupation" value="一般" onchange="selectOccupation('一般')" style="accent-color:var(--gold);width:auto;padding:0;border:none">一般
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;font-weight:300;letter-spacing:0.05em">
+              <input type="radio" name="occupation" value="鍼灸師" onchange="selectOccupation('鍼灸師')" style="accent-color:var(--gold);width:auto;padding:0;border:none">鍼灸師
+            </label>
+            <div id="occ-school-wrap" class="hidden" style="padding-left:24px">
+              <input type="text" id="input-school" placeholder="出身校をご記入ください" style="margin-top:4px">
+            </div>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;font-weight:300;letter-spacing:0.05em">
+              <input type="radio" name="occupation" value="鍼灸学校学生" onchange="selectOccupation('鍼灸学校学生')" style="accent-color:var(--gold);width:auto;padding:0;border:none">鍼灸学校学生
+            </label>
+            <div id="occ-student-wrap" class="hidden" style="padding-left:24px">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px">
+                <input type="text" id="input-student-school" placeholder="学校名">
+                <input type="text" id="input-student-grade" placeholder="学年（例：2年生）">
+              </div>
+            </div>
+          </div>
+          <input type="hidden" id="input-occupation">
+        </div>
       </div>
       <p class="notice" style="margin-top:20px;">すべての必須項目を入力すると、確認画面が表示されます。</p>
     </div>
@@ -1231,6 +1255,10 @@
         <div class="confirm-row">
           <span class="confirm-label">電話</span>
           <span class="confirm-value" id="conf-phone">—</span>
+        </div>
+        <div class="confirm-row">
+          <span class="confirm-label">職種・立場</span>
+          <span class="confirm-value" id="conf-occupation">—</span>
         </div>
       </div>
 
@@ -1395,7 +1423,7 @@
           selectedTime = null;
           renderCalendar();
           showStep('step-time');
-          updateTimeSlots(dateStr);
+          fetchBookedSlots().then(() => updateTimeSlots(dateStr));
           scrollToStep('step-time');
         };
       }
@@ -1435,6 +1463,13 @@
 
   let selectedVisit = null;
 
+  function selectOccupation(val) {
+    document.getElementById('input-occupation').value = val;
+    document.getElementById('occ-school-wrap').classList.toggle('hidden', val !== '鍼灸師');
+    document.getElementById('occ-student-wrap').classList.toggle('hidden', val !== '鍼灸学校学生');
+    checkReadyToConfirm();
+  }
+
   function selectVisit(btn) {
     document.querySelectorAll('#step-visit .menu-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
@@ -1456,7 +1491,8 @@
     const name = document.getElementById('input-name').value.trim();
     const email = document.getElementById('input-email').value.trim();
     const phone = document.getElementById('input-phone').value.trim();
-    if (selectedDate && selectedTime && selectedMenu && selectedVisit && name && email && phone) {
+    const occupation = document.getElementById('input-occupation').value.trim();
+    if (selectedDate && selectedTime && selectedMenu && selectedVisit && name && email && phone && occupation) {
       updateConfirm();
       showStep('step-confirm');
     }
@@ -1477,6 +1513,17 @@
     document.getElementById('conf-name').textContent = document.getElementById('input-name').value;
     document.getElementById('conf-email').textContent = document.getElementById('input-email').value;
     document.getElementById('conf-phone').textContent = document.getElementById('input-phone').value;
+    const occ = document.getElementById('input-occupation').value;
+    let occLabel = occ;
+    if (occ === '鍼灸師') {
+      const school = document.getElementById('input-school').value;
+      if (school) occLabel += `（${school}）`;
+    } else if (occ === '鍼灸学校学生') {
+      const school = document.getElementById('input-student-school').value;
+      const grade = document.getElementById('input-student-grade').value;
+      if (school || grade) occLabel += `（${school}　${grade}）`;
+    }
+    document.getElementById('conf-occupation').textContent = occLabel;
   }
 
   function showStep(id) {
@@ -1512,7 +1559,15 @@
     const days = ['日','月','火','水','木','金','土'];
     const datetime = `${d.getFullYear()}年${months[d.getMonth()]}${d.getDate()}日（${days[d.getDay()]}） ${selectedTime}〜`;
 
-    const payload = { name, kana, email, phone, note, datetime, menu: selectedMenu, date: formatDate(d), time: selectedTime, visit: selectedVisit };
+    const occupation = document.getElementById('input-occupation').value;
+    const school = document.getElementById('input-school').value;
+    const studentSchool = document.getElementById('input-student-school').value;
+    const studentGrade = document.getElementById('input-student-grade').value;
+    let occupationDetail = occupation;
+    if (occupation === '鍼灸師' && school) occupationDetail += `（${school}）`;
+    if (occupation === '鍼灸学校学生' && (studentSchool || studentGrade)) occupationDetail += `（${studentSchool}　${studentGrade}）`;
+
+    const payload = { name, kana, email, phone, note, datetime, menu: selectedMenu, date: formatDate(d), time: selectedTime, visit: selectedVisit, occupation: occupationDetail };
 
     try {
       const res = await fetch(GAS_URL, {
@@ -1575,7 +1630,11 @@
   currentYear = 2026;
   currentMonth = 5;
   renderCalendar();
-  fetchBookedSlots();
+  fetchBookedSlots().then(() => {
+    // データ取得後にカレンダーとタイムスロットを更新
+    renderCalendar();
+    if (selectedDate) updateTimeSlots(formatDate(selectedDate));
+  });
 </script>
 </body>
 </html>
