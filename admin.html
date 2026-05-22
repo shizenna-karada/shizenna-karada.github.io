@@ -1036,13 +1036,16 @@
   // 予診票データ読み込み
   async function loadYosinhyo() {
     document.getElementById('yosinhyo-loading').style.display = 'block';
-    document.getElementById('yosinhyo-table-wrap').style.display = 'none';
+    document.getElementById('yosinhyo-table-wrap') && (document.getElementById('yosinhyo-table-wrap').style.display = 'none');
     document.getElementById('yosinhyo-empty').style.display = 'none';
     try {
       const res = await fetch(GAS_URL + '?action=getYosinhyo');
       const data = await res.json();
       const rows = data.yosinhyo || [];
-      allYosinhyo = rows.slice(1).reverse(); // ヘッダー除く
+      // ヘッダー行がある場合は除く（最初の行が文字列配列かチェック）
+      const dataRows = (rows.length > 0 && typeof rows[0][0] === 'string' && rows[0][0] === '受付日時')
+        ? rows.slice(1) : rows;
+      allYosinhyo = dataRows.reverse();
       renderYosinhyo(allYosinhyo);
     } catch(e) {
       document.getElementById('yosinhyo-loading').textContent = 'データの取得に失敗しました';
@@ -1060,10 +1063,12 @@
     // 列インデックス: 0=受付日時,1=患者番号,2=名前,3=ふりがな,4=年齢,5=性別
     // 21=主訴, 55=肝,56=心,57=脾,58=肺,59=腎,60=合計
     tbody.innerHTML = rows.map((row, i) => {
+      const timestamp = row[0] instanceof Date
+        ? Utilities && row[0].toLocaleString('ja-JP') : String(row[0] || '');
       const chief = (row[21] || '').substring(0, 30) + ((row[21] || '').length > 30 ? '...' : '');
       const fvsTotal = row[63] || '—';
       return `<tr>
-        <td style="font-size:11px;white-space:nowrap">${row[0] || ''}</td>
+        <td style="font-size:11px;white-space:nowrap">${typeof row[0] === 'object' && row[0] !== null ? new Date(row[0]).toLocaleString('ja-JP') : (row[0] || '')}</td>
         <td style="font-size:11px">${row[1] || '—'}</td>
         <td>${row[2] || ''}<br><span style="font-size:10px;color:var(--ash)">${row[3] || ''}</span></td>
         <td style="font-size:12px">${row[4] || ''}歳・${row[5] || ''}</td>
