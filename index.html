@@ -1557,6 +1557,9 @@
   });
 
   function updateConfirm() {
+    // エラーメッセージをリセット
+    document.getElementById('error-area').classList.add('hidden');
+    document.getElementById('error-area').textContent = '';
     const months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
     const d = selectedDate;
     const days = ['日','月','火','水','木','金','土'];
@@ -1592,6 +1595,10 @@
   }
 
   async function submitReservation() {
+    // エラーメッセージをリセット
+    document.getElementById('error-area').classList.add('hidden');
+    document.getElementById('error-area').textContent = '';
+
     const name = document.getElementById('input-name').value.trim();
     const kana = document.getElementById('input-kana').value.trim();
     const email = document.getElementById('input-email').value.trim();
