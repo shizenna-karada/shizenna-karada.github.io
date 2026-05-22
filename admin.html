@@ -905,7 +905,7 @@
     }
 
     function renderRow(row) {
-      const [id, datetime, name, kana, phone, email, menu, status, note, date, time, visit] = row;
+      const [id, datetime, name, kana, phone, email, menu, status, note, date, time, visit, occupation] = row;
       const badgeClass = status === 'キャンセル' ? 'badge-cancelled' : status === '手動入力' ? 'badge-manual' : 'badge-confirmed';
       const visitBadge = visit === '初診' ? '<span class="badge badge-shinshin">初診</span>' : visit === '再診' ? '<span class="badge badge-saishin">再診</span>' : '';
       return `<tr>
@@ -913,6 +913,7 @@
         <td>${name || ''}<br><span style="font-size:10px;color:var(--ash)">${kana || ''}</span></td>
         <td style="font-size:12px">${(menu || '').split('（')[0]}<br><span style="font-size:10px;color:var(--ash)">${phone || ''}</span></td>
         <td>${visitBadge}</td>
+        <td style="font-size:11px;color:var(--ash)">${occupation || ''}</td>
         <td><span class="badge ${badgeClass}">${status || ''}</span></td>
         <td>${status !== 'キャンセル' ? `<button class="btn btn-sm btn-danger" onclick="cancelBooking('${id}', this)">キャンセル</button>` : ''}</td>
       </tr>`;
@@ -933,7 +934,7 @@
           </div>
           <div class="date-group-body">
             <table>
-              <thead><tr><th>時間</th><th>お名前</th><th>メニュー・電話</th><th>初再診</th><th>状態</th><th>操作</th></tr></thead>
+              <thead><tr><th>時間</th><th>お名前</th><th>メニュー・電話</th><th>初再診</th><th>職種・立場</th><th>状態</th><th>操作</th></tr></thead>
               <tbody>${groupRows.map(renderRow).join('')}</tbody>
             </table>
           </div>
