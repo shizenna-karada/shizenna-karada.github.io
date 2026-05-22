@@ -905,11 +905,22 @@
     }
 
     function renderRow(row) {
-      const [id, datetime, name, kana, phone, email, menu, status, note, date, time, visit, occupation] = row;
+      const id = row[0], datetime = row[1], name = row[2], kana = row[3];
+      const phone = row[4], email = row[5], menu = row[6], status = row[7];
+      const note = row[8], date = row[9], time = row[10], occupation = row[11], visit = row[12];
+      // 時刻のフォーマット（Dateオブジェクトの場合は変換）
+      let timeStr = '';
+      if (time instanceof Date || (typeof time === 'object' && time !== null)) {
+        const h = String(time.getHours ? time.getHours() : new Date(time).getHours()).padStart(2,'0');
+        const m = String(time.getMinutes ? time.getMinutes() : new Date(time).getMinutes()).padStart(2,'0');
+        timeStr = `${h}:${m}`;
+      } else {
+        timeStr = String(time || '').trim();
+      }
       const badgeClass = status === 'キャンセル' ? 'badge-cancelled' : status === '手動入力' ? 'badge-manual' : 'badge-confirmed';
       const visitBadge = visit === '初診' ? '<span class="badge badge-shinshin">初診</span>' : visit === '再診' ? '<span class="badge badge-saishin">再診</span>' : '';
       return `<tr>
-        <td style="white-space:nowrap;font-weight:500">${time ? time + '〜' : datetime || ''}</td>
+        <td style="white-space:nowrap;font-weight:500">${timeStr ? timeStr + '〜' : datetime || ''}</td>
         <td>${name || ''}<br><span style="font-size:10px;color:var(--ash)">${kana || ''}</span></td>
         <td style="font-size:12px">${(menu || '').split('（')[0]}<br><span style="font-size:10px;color:var(--ash)">${phone || ''}</span></td>
         <td>${visitBadge}</td>
