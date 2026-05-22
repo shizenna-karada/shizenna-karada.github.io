@@ -695,8 +695,51 @@
     letter-spacing: 0.15em;
   }
 
-  /* ── ユーティリティ ── */
-  .hidden { display: none !important; }
+  .occ-btn {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 24px;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .occ-btn::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+    transform: scaleY(0);
+    transition: transform 0.25s ease;
+  }
+  .occ-btn:hover::after,
+  .occ-btn.selected::after { transform: scaleY(1); }
+  .occ-btn.selected { background: #faf8f4; border-color: var(--gold); }
+  .occ-btn .menu-check {
+    width: 18px; height: 18px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .occ-btn.selected .menu-check {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+  .occ-btn.selected .menu-check::after {
+    content: '';
+    position: absolute;
+    top: 4px; left: 4px;
+    width: 8px; height: 8px;
+    background: white;
+    border-radius: 50%;
+  }
 
   /* ── 同意オーバーレイ ── */
   #consent-overlay {
@@ -1194,19 +1237,28 @@
         <div class="form-field">
           <label>職種・立場<span class="req">必須</span></label>
           <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
-            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;font-weight:300;letter-spacing:0.05em">
-              <input type="radio" name="occupation" value="一般" onchange="selectOccupation('一般')" style="accent-color:var(--gold);width:auto;padding:0;border:none">一般
-            </label>
-            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;font-weight:300;letter-spacing:0.05em">
-              <input type="radio" name="occupation" value="鍼灸師" onchange="selectOccupation('鍼灸師')" style="accent-color:var(--gold);width:auto;padding:0;border:none">鍼灸師
-            </label>
-            <div id="occ-school-wrap" class="hidden" style="padding-left:24px">
-              <input type="text" id="input-school" placeholder="出身校をご記入ください" style="margin-top:4px">
+            <div class="occ-btn" onclick="selectOccupation('一般', this)">
+              <div class="menu-check"></div>
+              <div class="menu-info">
+                <div class="menu-name">一般</div>
+              </div>
             </div>
-            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;font-weight:300;letter-spacing:0.05em">
-              <input type="radio" name="occupation" value="鍼灸学校学生" onchange="selectOccupation('鍼灸学校学生')" style="accent-color:var(--gold);width:auto;padding:0;border:none">鍼灸学校学生
-            </label>
-            <div id="occ-student-wrap" class="hidden" style="padding-left:24px">
+            <div class="occ-btn" onclick="selectOccupation('鍼灸師', this)">
+              <div class="menu-check"></div>
+              <div class="menu-info">
+                <div class="menu-name">鍼灸師</div>
+              </div>
+            </div>
+            <div id="occ-school-wrap" class="hidden" style="padding-left:20px">
+              <input type="text" id="input-school" placeholder="出身校をご記入ください">
+            </div>
+            <div class="occ-btn" onclick="selectOccupation('鍼灸学校学生', this)">
+              <div class="menu-check"></div>
+              <div class="menu-info">
+                <div class="menu-name">鍼灸学校学生</div>
+              </div>
+            </div>
+            <div id="occ-student-wrap" class="hidden" style="padding-left:20px">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px">
                 <input type="text" id="input-student-school" placeholder="学校名">
                 <input type="text" id="input-student-grade" placeholder="学年（例：2年生）">
@@ -1463,7 +1515,9 @@
 
   let selectedVisit = null;
 
-  function selectOccupation(val) {
+  function selectOccupation(val, btn) {
+    document.querySelectorAll('.occ-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
     document.getElementById('input-occupation').value = val;
     document.getElementById('occ-school-wrap').classList.toggle('hidden', val !== '鍼灸師');
     document.getElementById('occ-student-wrap').classList.toggle('hidden', val !== '鍼灸学校学生');
