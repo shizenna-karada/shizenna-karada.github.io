@@ -1322,7 +1322,7 @@
         alert('患者番号を保存しました');
         renderYosinhyo(allYosinhyo);
       } else {
-        alert('保存に失敗しました。もう一度お試しください。');
+        alert('保存に失敗しました: ' + (result.message || '不明なエラー'));
       }
     } catch(e) {
       alert('保存に失敗しました');
