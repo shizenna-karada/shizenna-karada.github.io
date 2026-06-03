@@ -1386,7 +1386,7 @@
       // 予診票統計
       const r2 = await fetch(GAS_URL + '?action=getYosinhyo');
       const d2 = await r2.json();
-      const yRows = (d2.yosinhyo || []).slice(1);
+      const yRows = (d2.yosinhyo || []);
       document.getElementById('stat-yosinhyo').textContent = yRows.length;
 
       if (yRows.length > 0) {
