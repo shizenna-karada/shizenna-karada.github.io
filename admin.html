@@ -737,7 +737,6 @@
               <th>お名前</th>
               <th>年齢・性別</th>
               <th>主訴（抜粋）</th>
-              <th>電話・メール</th>
               <th>FVS合計</th>
               <th>操作</th>
             </tr>
@@ -935,7 +934,7 @@
       return `<tr>
         <td style="white-space:nowrap;font-weight:500">${timeStr ? timeStr + '〜' : datetime || ''}</td>
         <td>${name || ''}<br><span style="font-size:10px;color:var(--ash)">${kana || ''}</span></td>
-        <td style="font-size:12px">${(menu || '').split('（')[0]}<br><span style="font-size:10px;color:var(--ash)">${phone || ''}</span></td>
+        <td style="font-size:12px">${(menu || '').split('（')[0]}<br><span style="font-size:10px;color:var(--ash)">${phone || ''}</span><br><span style="font-size:10px;color:var(--ash)">${email || ''}</span></td>
         <td>${visitBadge}</td>
         <td style="font-size:11px;color:var(--ash)">${occupation || ''}</td>
         <td><span class="badge ${badgeClass}">${status || ''}</span></td>
@@ -1076,17 +1075,12 @@
     tbody.innerHTML = rows.map((row, i) => {
       const chief = (row[21] || '').substring(0, 30) + ((row[21] || '').length > 30 ? '...' : '');
       const fvsTotal = row[63] || '—';
-      // 予約データから電話・メールを名前で検索
-      const booking = allBookings.find(b => String(b[2]).trim() === String(row[2]).trim());
-      const phone = booking ? booking[4] : '—';
-      const email = booking ? booking[5] : '—';
       return `<tr>
         <td style="font-size:11px;white-space:nowrap">${typeof row[0] === 'object' && row[0] !== null ? new Date(row[0]).toLocaleString('ja-JP') : (row[0] || '')}</td>
         <td style="font-size:11px">${row[1] || '—'}</td>
         <td>${row[2] || ''}<br><span style="font-size:10px;color:var(--ash)">${row[3] || ''}</span></td>
         <td style="font-size:12px">${row[4] || ''}歳・${row[5] || ''}</td>
         <td style="font-size:11px;color:var(--ash)">${chief}</td>
-        <td style="font-size:11px">${phone}<br><span style="font-size:10px;color:var(--ash)">${email}</span></td>
         <td style="text-align:center">
           <span style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold)">${fvsTotal}</span>
           <span style="font-size:9px;color:var(--ash)">点</span>
