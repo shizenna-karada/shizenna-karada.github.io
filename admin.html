@@ -1182,6 +1182,7 @@
         <div class="fvs-score-wrap">
           ${(() => {
             const FVS_LABELS = ['全然ない','ほとんどない','ときどきある','よくある','いつもある'];
+            const FVS_COLORS = ['#7a8c72','#a8b89e','#d4b87a','#c09a5a','#c0756a'];
             const groups = [
               { label: '肝（筋肉・からだ）', score: row[59], items: [
                 { q: '首（肩）がこる', val: row[65] },
@@ -1210,7 +1211,7 @@
               ]},
             ];
             return groups.map(g => `
-              <div style="margin-bottom:16px">
+              <div style="margin-bottom:20px">
                 <div class="fvs-score-row">
                   <span class="fvs-score-label">${g.label}</span>
                   <div class="fvs-score-track">
@@ -1218,13 +1219,32 @@
                   </div>
                   <span class="fvs-score-num">${g.score || 0}</span>
                 </div>
-                <div style="padding-left:8px;margin-top:6px">
-                  ${g.items.map(item => `
-                    <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(184,151,90,0.08);font-size:11px">
-                      <span style="color:var(--ash);letter-spacing:0.03em">${item.q}</span>
-                      <span style="color:var(--ink);font-weight:400;white-space:nowrap;margin-left:12px">${FVS_LABELS[parseInt(item.val)] || '—'}</span>
+                <div style="padding-left:8px;margin-top:8px">
+                  ${g.items.map(item => {
+                    const v = parseInt(item.val) || 0;
+                    const color = FVS_COLORS[v];
+                    const pct = (v / 4) * 100;
+                    const label = FVS_LABELS[v] || '—';
+                    return `
+                    <div style="margin-bottom:8px">
+                      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                        <span style="font-size:11px;color:var(--ash);letter-spacing:0.03em">${item.q}</span>
+                        <span style="font-size:10px;color:${color};font-weight:500;white-space:nowrap;margin-left:12px">${label}</span>
+                      </div>
+                      <div style="position:relative;height:6px;background:#ede8e0;border-radius:3px">
+                        <div style="position:absolute;top:0;left:0;height:100%;width:${pct}%;background:${color};border-radius:3px;transition:width 0.3s"></div>
+                        ${[0,1,2,3,4].map(i => `
+                          <div style="position:absolute;top:50%;left:${i*25}%;transform:translate(-50%,-50%);width:2px;height:10px;background:white;border-radius:1px"></div>
+                        `).join('')}
+                        <div style="position:absolute;top:50%;left:${pct}%;transform:translate(-50%,-50%);width:12px;height:12px;background:${color};border-radius:50%;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.2)"></div>
+                      </div>
+                      <div style="display:flex;justify-content:space-between;margin-top:2px">
+                        <span style="font-size:9px;color:#aaa">全然ない</span>
+                        <span style="font-size:9px;color:#aaa">いつもある</span>
+                      </div>
                     </div>
-                  `).join('')}
+                    `;
+                  }).join('')}
                 </div>
               </div>
             `).join('');
