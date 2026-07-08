@@ -1074,7 +1074,7 @@
     document.getElementById('yosinhyo-table-wrap').style.display = 'block';
     tbody.innerHTML = rows.map((row, i) => {
       const chief = (row[21] || '').substring(0, 30) + ((row[21] || '').length > 30 ? '...' : '');
-      const fvsTotal = row[63] || '—';
+      const fvsTotal = row[64] || '—';
       return `<tr>
         <td style="font-size:11px;white-space:nowrap">${typeof row[0] === 'object' && row[0] !== null ? new Date(row[0]).toLocaleString('ja-JP') : (row[0] || '')}</td>
         <td style="font-size:11px">${row[1] || '—'}</td>
@@ -1166,42 +1166,82 @@
           <div class="detail-row"><span class="detail-key">間食</span><span class="detail-val">${row[34] || ''}</span></div>
           <div class="detail-row"><span class="detail-key">好きな味</span><span class="detail-val">${row[35] || ''}</span></div>
           <div class="detail-row"><span class="detail-key">嫌いな味</span><span class="detail-val">${row[36] || ''}</span></div>
-          <div class="detail-row"><span class="detail-key">便通</span><span class="detail-val">${row[37] || ''}${row[38] ? '　' + row[38] + '回/日' : ''}${row[39] ? '　' + row[39] : ''}</span></div>
-          <div class="detail-row"><span class="detail-key">尿</span><span class="detail-val">${row[40] ? row[40] + '回/日' : ''}${row[41] ? '　' + row[41] : ''}${row[42] ? '　排尿痛' + row[42] : ''}${row[43] ? '　残尿' + row[43] : ''}${row[44] ? '　量' + row[44] : ''}</span></div>
-          <div class="detail-row"><span class="detail-key">汗</span><span class="detail-val">${row[45] || ''}</span></div>
-          <div class="detail-row"><span class="detail-key">睡眠</span><span class="detail-val">${row[46] ? row[46] + '時間' : ''}${row[47] ? '　' + row[47] : ''}${row[48] ? '〜' + row[48] : ''}</span></div>
-          <div class="detail-row"><span class="detail-key">睡眠状態</span><span class="detail-val">${row[49] || ''}</span></div>
-          <div class="detail-row"><span class="detail-key">月経</span><span class="detail-val">${row[50] || ''}${row[51] ? '　周期' + row[51] + '日' : ''}${row[52] ? '　生理痛' + row[52] : ''}</span></div>
-          <div class="detail-row"><span class="detail-key">嗜好</span><span class="detail-val">${row[54] ? 'ビール' + row[54] + '本' : ''}${row[55] ? '　日本酒' + row[55] + '合' : ''}${row[56] ? '　たばこ' + row[56] + '本' : ''}</span></div>
-          <div class="detail-row"><span class="detail-key">食の傾向</span><span class="detail-val">${row[57] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">便通</span><span class="detail-val">${row[37] || ''}${row[38] ? '　' + row[38] + '日に' : ''}${row[39] ? row[39] + '回' : ''}${row[40] ? '　' + row[40] : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">尿</span><span class="detail-val">${row[41] ? row[41] + '回/日' : ''}${row[42] ? '　' + row[42] : ''}${row[43] ? '　排尿痛' + row[43] : ''}${row[44] ? '　残尿' + row[44] : ''}${row[45] ? '　量' + row[45] : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">汗</span><span class="detail-val">${row[46] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">睡眠</span><span class="detail-val">${row[47] ? row[47] + '時間' : ''}${row[48] ? '　' + row[48] : ''}${row[49] ? '〜' + row[49] : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">睡眠状態</span><span class="detail-val">${row[50] || ''}</span></div>
+          <div class="detail-row"><span class="detail-key">月経</span><span class="detail-val">${row[51] || ''}${row[52] ? '　周期' + row[52] + '日' : ''}${row[53] ? '　生理痛' + row[53] : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">嗜好</span><span class="detail-val">${row[55] ? 'ビール' + row[55] + '本' : ''}${row[56] ? '　日本酒' + row[56] + '合' : ''}${row[57] ? '　たばこ' + row[57] + '本' : ''}</span></div>
+          <div class="detail-row"><span class="detail-key">食の傾向</span><span class="detail-val">${row[58] || ''}</span></div>
         </div>
       </div>
 
       <div class="detail-section">
         <div class="detail-section-title">FVSv2スコア</div>
         <div class="fvs-score-wrap">
-          ${[['肝（筋肉・からだ）', row[58]], ['心（精神・こころ）', row[59]], ['脾（疲労・睡眠）', row[60]], ['肺（自律神経）', row[61]], ['腎（脳機能）', row[62]]].map(([label, score]) => `
-            <div class="fvs-score-row">
-              <span class="fvs-score-label">${label}</span>
-              <div class="fvs-score-track">
-                <div class="fvs-score-fill" style="width:${Math.min(100, (score/8)*100)}%"></div>
+          ${(() => {
+            const FVS_LABELS = ['全然ない','ほとんどない','ときどきある','よくある','いつもある'];
+            const groups = [
+              { label: '肝（筋肉・からだ）', score: row[59], items: [
+                { q: '首（肩）がこる', val: row[65] },
+                { q: '首（肩）がつっぱる', val: row[66] },
+                { q: '背中が痛む', val: row[67] },
+              ]},
+              { label: '心（精神・こころ）', score: row[60], items: [
+                { q: '心配事が多い', val: row[68] },
+                { q: 'よく悩む', val: row[69] },
+                { q: '何事も楽しめない', val: row[70] },
+              ]},
+              { label: '脾（疲労・睡眠）', score: row[61], items: [
+                { q: '疲れがとれない', val: row[71] },
+                { q: '疲れて横になる', val: row[72] },
+                { q: '体が重い', val: row[73] },
+              ]},
+              { label: '肺（自律神経）', score: row[62], items: [
+                { q: '腹が鳴る', val: row[74] },
+                { q: '腹が空いて仕方ない', val: row[75] },
+                { q: '鼻水が出る', val: row[76] },
+              ]},
+              { label: '腎（脳機能）', score: row[63], items: [
+                { q: 'ぼんやりする', val: row[77] },
+                { q: '元気がない', val: row[78] },
+                { q: '記憶力が低下する', val: row[79] },
+              ]},
+            ];
+            return groups.map(g => `
+              <div style="margin-bottom:16px">
+                <div class="fvs-score-row">
+                  <span class="fvs-score-label">${g.label}</span>
+                  <div class="fvs-score-track">
+                    <div class="fvs-score-fill" style="width:${Math.min(100, ((g.score||0)/8)*100)}%"></div>
+                  </div>
+                  <span class="fvs-score-num">${g.score || 0}</span>
+                </div>
+                <div style="padding-left:8px;margin-top:6px">
+                  ${g.items.map(item => `
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(184,151,90,0.08);font-size:11px">
+                      <span style="color:var(--ash);letter-spacing:0.03em">${item.q}</span>
+                      <span style="color:var(--ink);font-weight:400;white-space:nowrap;margin-left:12px">${FVS_LABELS[parseInt(item.val)] || '—'}</span>
+                    </div>
+                  `).join('')}
+                </div>
               </div>
-              <span class="fvs-score-num">${score || 0}</span>
-            </div>
-          `).join('')}
+            `).join('');
+          })()}
           <div style="text-align:right;margin-top:8px;font-size:12px;color:var(--ash)">
-            合計：<span style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)">${row[63] || 0}</span>点 / 40点
+            合計：<span style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)">${row[64] || 0}</span>点 / 40点
           </div>
         </div>
 
         ${(() => {
           // 主証・副証の判定
           const viscera = [
-            { name: '肝', score: parseInt(row[58]) || 0 },
-            { name: '心', score: parseInt(row[59]) || 0 },
-            { name: '脾', score: parseInt(row[60]) || 0 },
-            { name: '肺', score: parseInt(row[61]) || 0 },
-            { name: '腎', score: parseInt(row[62]) || 0 },
+            { name: '肝', score: parseInt(row[59]) || 0 },
+            { name: '心', score: parseInt(row[60]) || 0 },
+            { name: '脾', score: parseInt(row[61]) || 0 },
+            { name: '肺', score: parseInt(row[62]) || 0 },
+            { name: '腎', score: parseInt(row[63]) || 0 },
           ];
           const sorted = [...viscera].sort((a, b) => b.score - a.score);
           const maxScore = sorted[0].score;
@@ -1209,7 +1249,7 @@
           const fusho = sorted.filter(v => v.score !== maxScore && maxScore - v.score <= 3);
 
           // 合計スコア評価
-          const total = parseInt(row[63]) || 0;
+          const total = parseInt(row[64]) || 0;
           let evaluation, evalColor, evalDesc;
           if (total <= 8) {
             evaluation = '良好'; evalColor = '#7a8c72';
@@ -1386,11 +1426,11 @@
       document.getElementById('stat-yosinhyo').textContent = yRows.length;
 
       if (yRows.length > 0) {
-        const fvsAvg = Math.round(yRows.reduce((sum, r) => sum + (parseInt(r[63]) || 0), 0) / yRows.length);
+        const fvsAvg = Math.round(yRows.reduce((sum, r) => sum + (parseInt(r[64]) || 0), 0) / yRows.length);
         document.getElementById('stat-fvs-avg').textContent = fvsAvg;
 
         const fvsLabels = ['肝', '心', '脾', '肺', '腎'];
-        const fvsAvgs = [58,59,60,61,62].map((col, i) => ({
+        const fvsAvgs = [59,60,61,62,63].map((col, i) => ({
           label: fvsLabels[i],
           avg: Math.round(yRows.reduce((sum, r) => sum + (parseInt(r[col]) || 0), 0) / yRows.length * 10) / 10
         }));
