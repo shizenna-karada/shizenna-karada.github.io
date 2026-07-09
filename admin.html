@@ -1074,7 +1074,7 @@
     document.getElementById('yosinhyo-table-wrap').style.display = 'block';
     tbody.innerHTML = rows.map((row, i) => {
       const chief = (row[21] || '').substring(0, 30) + ((row[21] || '').length > 30 ? '...' : '');
-      const fvsTotal = row[64] || '—';
+      const fvsTotal = row[63] || '—';
       return `<tr>
         <td style="font-size:11px;white-space:nowrap">${typeof row[0] === 'object' && row[0] !== null ? new Date(row[0]).toLocaleString('ja-JP') : (row[0] || '')}</td>
         <td style="font-size:11px">${row[1] || '—'}</td>
@@ -1184,30 +1184,30 @@
             const FVS_LABELS = ['全然ない','ほとんどない','ときどきある','よくある','いつもある'];
             const FVS_COLORS = ['#7a8c72','#a8b89e','#d4b87a','#c09a5a','#c0756a'];
             const groups = [
-              { label: '肝（筋肉・からだ）', score: row[59], items: [
-                { q: '首（肩）がこる', val: row[65] },
-                { q: '首（肩）がつっぱる', val: row[66] },
-                { q: '背中が痛む', val: row[67] },
+              { label: '肝（筋肉・からだ）', score: row[58], items: [
+                { q: '首（肩）がこる', val: row[64] },
+                { q: '首（肩）がつっぱる', val: row[65] },
+                { q: '背中が痛む', val: row[66] },
               ]},
-              { label: '心（精神・こころ）', score: row[60], items: [
-                { q: '心配事が多い', val: row[68] },
-                { q: 'よく悩む', val: row[69] },
-                { q: '何事も楽しめない', val: row[70] },
+              { label: '心（精神・こころ）', score: row[59], items: [
+                { q: '心配事が多い', val: row[67] },
+                { q: 'よく悩む', val: row[68] },
+                { q: '何事も楽しめない', val: row[69] },
               ]},
-              { label: '脾（疲労・睡眠）', score: row[61], items: [
-                { q: '疲れがとれない', val: row[71] },
-                { q: '疲れて横になる', val: row[72] },
-                { q: '体が重い', val: row[73] },
+              { label: '脾（疲労・睡眠）', score: row[60], items: [
+                { q: '疲れがとれない', val: row[70] },
+                { q: '疲れて横になる', val: row[71] },
+                { q: '体が重い', val: row[72] },
               ]},
-              { label: '肺（自律神経）', score: row[62], items: [
-                { q: '腹が鳴る', val: row[74] },
-                { q: '腹が空いて仕方ない', val: row[75] },
-                { q: '鼻水が出る', val: row[76] },
+              { label: '肺（自律神経）', score: row[61], items: [
+                { q: '腹が鳴る', val: row[73] },
+                { q: '腹が空いて仕方ない', val: row[74] },
+                { q: '鼻水が出る', val: row[75] },
               ]},
-              { label: '腎（脳機能）', score: row[63], items: [
-                { q: 'ぼんやりする', val: row[77] },
-                { q: '元気がない', val: row[78] },
-                { q: '記憶力が低下する', val: row[79] },
+              { label: '腎（脳機能）', score: row[62], items: [
+                { q: 'ぼんやりする', val: row[76] },
+                { q: '元気がない', val: row[77] },
+                { q: '記憶力が低下する', val: row[78] },
               ]},
             ];
             return groups.map(g => `
@@ -1250,18 +1250,18 @@
             `).join('');
           })()}
           <div style="text-align:right;margin-top:8px;font-size:12px;color:var(--ash)">
-            合計：<span style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)">${row[64] || 0}</span>点 / 40点
+            合計：<span style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)">${row[63] || 0}</span>点 / 40点
           </div>
         </div>
 
         ${(() => {
           // 主証・副証の判定
           const viscera = [
-            { name: '肝', score: parseInt(row[59]) || 0 },
-            { name: '心', score: parseInt(row[60]) || 0 },
-            { name: '脾', score: parseInt(row[61]) || 0 },
-            { name: '肺', score: parseInt(row[62]) || 0 },
-            { name: '腎', score: parseInt(row[63]) || 0 },
+            { name: '肝', score: parseInt(row[58]) || 0 },
+            { name: '心', score: parseInt(row[59]) || 0 },
+            { name: '脾', score: parseInt(row[60]) || 0 },
+            { name: '肺', score: parseInt(row[61]) || 0 },
+            { name: '腎', score: parseInt(row[62]) || 0 },
           ];
           const sorted = [...viscera].sort((a, b) => b.score - a.score);
           const maxScore = sorted[0].score;
@@ -1269,7 +1269,7 @@
           const fusho = sorted.filter(v => v.score !== maxScore && maxScore - v.score <= 3);
 
           // 合計スコア評価
-          const total = parseInt(row[64]) || 0;
+          const total = parseInt(row[63]) || 0;
           let evaluation, evalColor, evalDesc;
           if (total <= 8) {
             evaluation = '良好'; evalColor = '#7a8c72';
