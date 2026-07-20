@@ -336,7 +336,9 @@
   }
 
   .cal-btn {
-    width: 36px; height: 36px;
+    width: auto;
+    height: 36px;
+    padding: 0 14px;
     border: 1px solid var(--border);
     background: transparent;
     color: var(--ash);
@@ -344,7 +346,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    font-family: 'Noto Serif JP', serif;
     transition: all 0.2s;
   }
   .cal-btn:hover { background: var(--gold); color: white; border-color: var(--gold); }
@@ -1108,15 +1112,15 @@
     <div class="step" id="step-date">
       <div class="step-header">
         <span class="step-num">01</span>
-        <span class="step-title">日程をお選びください</span>
+        <span class="step-title">カレンダーからご希望の日をお選びください</span>
         <div class="step-connector"></div>
       </div>
 
       <div class="calendar-wrap">
         <div class="cal-nav">
-          <button class="cal-btn" id="prev-month">‹</button>
+          <button class="cal-btn" id="prev-month">◀ 前月</button>
           <span class="cal-month" id="cal-month-label"></span>
-          <button class="cal-btn" id="next-month">›</button>
+          <button class="cal-btn" id="next-month">次月 ▶</button>
         </div>
         <div class="cal-weekdays">
           <div class="cal-weekday sun">日</div>
