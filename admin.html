@@ -1446,14 +1446,20 @@
       document.getElementById('stat-yosinhyo').textContent = yRows.length;
 
       if (yRows.length > 0) {
-        const fvsAvg = Math.round(yRows.reduce((sum, r) => sum + (parseInt(r[64]) || 0), 0) / yRows.length);
+        const validFvsRows = yRows.filter(r => !isNaN(parseInt(r[63])));
+        const fvsAvg = validFvsRows.length > 0
+          ? Math.round(validFvsRows.reduce((sum, r) => sum + (parseInt(r[63]) || 0), 0) / validFvsRows.length)
+          : 0;
         document.getElementById('stat-fvs-avg').textContent = fvsAvg;
 
         const fvsLabels = ['肝', '心', '脾', '肺', '腎'];
-        const fvsAvgs = [59,60,61,62,63].map((col, i) => ({
-          label: fvsLabels[i],
-          avg: Math.round(yRows.reduce((sum, r) => sum + (parseInt(r[col]) || 0), 0) / yRows.length * 10) / 10
-        }));
+        const fvsAvgs = [58,59,60,61,62].map((col, i) => {
+          const validRows = yRows.filter(r => !isNaN(parseInt(r[col])));
+          const avg = validRows.length > 0
+            ? Math.round(validRows.reduce((sum, r) => sum + (parseInt(r[col]) || 0), 0) / validRows.length * 10) / 10
+            : 0;
+          return { label: fvsLabels[i], avg };
+        });
         const maxFvs = Math.max(...fvsAvgs.map(f => f.avg), 1);
         document.getElementById('chart-fvs').innerHTML = fvsAvgs.map(f => `
           <div class="bar-row">
