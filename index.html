@@ -390,6 +390,7 @@
     cursor: pointer;
     border: 1px solid transparent;
     transition: all 0.2s;
+    font-weight: 500;
   }
   .cal-cell.available::after {
     content: '';
@@ -1688,9 +1689,10 @@
     renderCalendar();
   };
 
-  // 初期化（6月から表示）
-  currentYear = 2026;
-  currentMonth = 5;
+  // 初期化（当月から表示）
+  const now = new Date();
+  currentYear = now.getFullYear();
+  currentMonth = now.getMonth();
   renderCalendar();
   fetchBookedSlots().then(() => {
     // データ取得後にカレンダーとタイムスロットを更新
