@@ -1215,7 +1215,7 @@
                 <div class="fvs-score-row">
                   <span class="fvs-score-label">${g.label}</span>
                   <div class="fvs-score-track">
-                    <div class="fvs-score-fill" style="width:${Math.min(100, ((g.score||0)/8)*100)}%"></div>
+                    <div class="fvs-score-fill" style="width:${Math.min(100, ((g.score||0)/12)*100)}%"></div>
                   </div>
                   <span class="fvs-score-num">${g.score || 0}</span>
                 </div>
@@ -1250,7 +1250,7 @@
             `).join('');
           })()}
           <div style="text-align:right;margin-top:8px;font-size:12px;color:var(--ash)">
-            合計：<span style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)">${row[63] || 0}</span>点 / 40点
+            合計：<span style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)">${row[63] || 0}</span>点 / 60点
           </div>
         </div>
 
@@ -1271,16 +1271,16 @@
           // 合計スコア評価
           const total = parseInt(row[63]) || 0;
           let evaluation, evalColor, evalDesc;
-          if (total <= 8) {
+          if (total <= 12) {
             evaluation = '良好'; evalColor = '#7a8c72';
             evalDesc = '全体的に不定愁訴は少なく、良好な状態です。';
-          } else if (total <= 16) {
+          } else if (total <= 24) {
             evaluation = '軽度の不調あり'; evalColor = '#b8975a';
             evalDesc = '一部に不定愁訴がみられます。生活習慣の見直しを検討してください。';
-          } else if (total <= 24) {
+          } else if (total <= 36) {
             evaluation = '中程度の不調あり'; evalColor = '#c09a5a';
             evalDesc = '複数の臓に不定愁訴が蓄積しています。施術の優先度を検討してください。';
-          } else if (total <= 32) {
+          } else if (total <= 48) {
             evaluation = '不調が強い・要注意'; evalColor = '#c07a5a';
             evalDesc = '全身的な不調が強い状態です。回復に時間がかかる可能性があります。生活習慣全般の見直しを促してください。';
           } else {
@@ -1313,7 +1313,7 @@
           </div>
 
           <div style="background:#faf8f4;border:1px solid var(--border);border-left:3px solid ${evalColor};padding:16px 20px;margin-top:12px">
-            <div style="font-size:9px;letter-spacing:0.15em;color:var(--ash);margin-bottom:6px">合計スコア評価（${total}点 / 40点）</div>
+            <div style="font-size:9px;letter-spacing:0.15em;color:var(--ash);margin-bottom:6px">合計スコア評価（${total}点 / 60点）</div>
             <div style="font-size:15px;font-weight:500;color:${evalColor};letter-spacing:0.08em;margin-bottom:6px">${evaluation}</div>
             <div style="font-size:11px;color:var(--ash);line-height:1.8;letter-spacing:0.05em">${evalDesc}</div>
           </div>
@@ -1458,7 +1458,7 @@
         document.getElementById('chart-fvs').innerHTML = fvsAvgs.map(f => `
           <div class="bar-row">
             <span class="bar-label">${f.label}</span>
-            <div class="bar-track"><div class="bar-fill" style="width:${(f.avg/8)*100}%"></div></div>
+            <div class="bar-track"><div class="bar-fill" style="width:${(f.avg/12)*100}%"></div></div>
             <span class="bar-val">${f.avg}点</span>
           </div>
         `).join('');
