@@ -644,6 +644,22 @@
     }
     .modal-header { padding: 12px 16px; }
     .modal-body { padding: 16px; }
+    /* 印刷時のバーを濃く */
+    .fvs-score-fill, .bar-fill {
+      background: #1a1510 !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    .fvs-score-track, .bar-track {
+      background: #ddd !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    /* 各項目のインラインバー */
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
   }
 
   @media (max-width: 640px) {
