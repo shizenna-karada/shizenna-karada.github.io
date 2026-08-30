@@ -670,6 +670,28 @@
     }
     /* 文字色は維持 */
     * { color: #1a1510 !important; }
+
+    /* インラインバーの色を印刷時に濃くする */
+    .fvs-score-wrap [style*="background:"] {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      filter: contrast(2) !important;
+    }
+
+    /* FVSスコアセクションを2列レイアウトに */
+    .fvs-score-wrap {
+      column-count: 2 !important;
+      column-gap: 24px !important;
+    }
+    .fvs-score-wrap > div {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+
+    /* 詳細情報も2列に */
+    .detail-grid {
+      grid-template-columns: 1fr 1fr !important;
+    }
   }
 
   @media (max-width: 640px) {
@@ -1369,7 +1391,29 @@
   }
 
   function printModal() {
+    // インラインバーの色を印刷用に濃くする
+    document.querySelectorAll('#modal-body [style*="border-radius:3px"]').forEach(el => {
+      if (el.style.background && el.style.background !== 'white' && el.style.background !== '#ede8e0') {
+        el.dataset.origBg = el.style.background;
+        el.style.background = '#1a1510';
+      }
+      if (el.style.backgroundColor && el.style.backgroundColor !== 'white' && el.style.backgroundColor !== 'rgb(237, 232, 224)') {
+        el.dataset.origBgColor = el.style.backgroundColor;
+        el.style.backgroundColor = '#1a1510';
+      }
+    });
     window.print();
+    // 印刷後に元の色に戻す
+    setTimeout(() => {
+      document.querySelectorAll('#modal-body [data-orig-bg]').forEach(el => {
+        el.style.background = el.dataset.origBg;
+        delete el.dataset.origBg;
+      });
+      document.querySelectorAll('#modal-body [data-orig-bg-color]').forEach(el => {
+        el.style.backgroundColor = el.dataset.origBgColor;
+        delete el.dataset.origBgColor;
+      });
+    }, 1000);
   }
 
   // 院長メモ保存
